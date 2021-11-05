@@ -31,12 +31,11 @@
         {% set possible_values = field.type_.__args__ %}
     {% endif %}
     {% if possible_values %}
-        {% set possible_values_line = "`" + possible_values|join("`, `") + "`" %}
 
 {{ heading(3) }} Possible values
 
-        {% if possible_values_line|length <= 75 %}
-{{ possible_values_line }}
+        {% if not is_values_with_descriptions(possible_values) %}
+`{{ possible_values|join("`, `") }}`
         {% else %}
             {% for value in possible_values %}
                 {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}

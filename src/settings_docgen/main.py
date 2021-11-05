@@ -1,8 +1,9 @@
 import importlib
+from collections import Iterable as IterableCollection
 from enum import Enum, auto
 from functools import cache
 from pathlib import Path
-from typing import Type
+from typing import Any, Type
 
 from click import BadParameter
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -46,6 +47,13 @@ def class_path_callback(value: str) -> str:
     return value
 
 
+def is_values_with_descriptions(value: Any) -> bool:
+    if not isinstance(value, IterableCollection):
+        return False
+
+    return all(list(map(lambda item: isinstance(item, tuple) and 2 >= len(item) >= 1, value)))
+
+
 @app.command()
 def main(
     class_path: str = Option(
@@ -70,6 +78,7 @@ def main(
         lstrip_blocks=True,
         keep_trailing_newline=True,
     )
+    env.globals["is_values_with_descriptions"] = is_values_with_descriptions
     template = env.get_template(f"{output_format.value}.jinja")
 
     print(template.render(**render_kwargs))
