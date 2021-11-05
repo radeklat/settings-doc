@@ -1,0 +1,12 @@
+# See https://pre-commit.com/ for usage and config
+default_language_version:
+  python: python3.8
+repos:
+- repo: local
+  hooks:
+  - id: formatting
+    name: formatting
+    stages: [commit]
+    language: system
+    entry: poetry run inv format
+    pass_filenames: false

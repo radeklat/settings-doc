@@ -1,0 +1,54 @@
+{#
+    The `--heading-offset` command line parameter is exposed as `heading_offset` variable.
+
+    See https://github.com/samuelcolvin/pydantic/blob/master/pydantic/fields.py for field structure.
+    Each `field` in `fields` is instance of `ModelField`.
+    Extra parameters unknown to pydantic are stored in `field.field_info.extra`.
+
+    To see all possible values, run this generator with `--format yaml`.
+#}
+{% macro heading(level=1) -%}
+    {{ '#' * (heading_offset + level) }}
+{%- endmacro %}
+{{ heading() }} Environment variables
+{% for field in fields %}
+
+{{ heading(2) }} `{{ field.field_info.extra["env_names"]|list|first|upper }}`
+
+*{% if field.required %}*Required*{% else %}Optional{% endif %}*{% if field.default != None %}, default value: `{{ field.default }}`{% endif %}
+
+
+{{ field.field_info.description }}
+    {% if field.field_info.extra["example"] %}
+
+{{ heading(3) }} Examples
+
+{{ field.field_info.extra["example"] }}
+    {% endif %}
+    {% if field.field_info.extra["possible_values"] %}
+        {% set possible_values = field.field_info.extra["possible_values"] %}
+    {% elif field.type_.__class__.__name__ == "_LiteralGenericAlias" %}
+        {% set possible_values = field.type_.__args__ %}
+    {% endif %}
+    {% if possible_values %}
+        {% set possible_values_line = "`" + possible_values|join("`, `") + "`" %}
+
+{{ heading(3) }} Possible values
+
+        {% if possible_values_line|length <= 75 %}
+{{ possible_values_line }}
+        {% else %}
+            {% for value in possible_values %}
+                {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
+                    {% if value|length == 2 %}
+- `{{ value[0] }}`: {{ value[1] }}
+                    {% else %}
+- `{{ value[0] }}`
+                    {% endif %}
+                {% else %}
+- `{{ value }}`
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endfor %}

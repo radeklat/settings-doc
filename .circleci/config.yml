@@ -1,0 +1,149 @@
+version: 2.1
+
+orbs:
+  gh: circleci/github-cli@1.0.4
+
+parameters:
+  project_name:
+    type: string
+    default: mqtt-influxdb-gateway
+  working_directory:
+    type: string
+    default: ~/mqtt-influxdb-gateway
+  python_version:
+    type: string
+    default: "3.9"
+  cache_version:
+    type: string
+    default: "2"
+  dockerhub_username:
+    type: string
+    default: "radeklat"
+
+jobs: # A basic unit of work in a run
+  test:
+    working_directory: << pipeline.parameters.working_directory >>
+    docker:
+      - image: circleci/python:<< pipeline.parameters.python_version >>
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python<< pipeline.parameters.python_version >>/site-packages
+      - restore_cache:
+          key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
+      - run:
+          name: Install dev libraries
+          command: pip install --upgrade pip poetry && poetry install --no-ansi
+      - run:
+          name: Format check
+          command: poetry run inv format --check
+      - run:
+          name: Type check
+          command: poetry run inv typecheck
+      - run:
+          name: Linters
+          command: poetry run inv lint
+      - save_cache:
+          key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
+          paths:
+            - ".venv"
+            - "/usr/local/bin"
+            - "/usr/local/lib/python<< pipeline.parameters.python_version >>/site-packages"
+      - run:
+          name: Unit tests
+          command: poetry run inv test-unit
+      - run:
+          name: Integration tests
+          command: poetry run inv test-integration
+      - run:
+          name: Build coverage report
+          command: poetry run inv coverage-report
+#      - run:
+#          name: Upload coverage reports to Codecov
+#          command: |
+#            [[ "${CIRCLE_BRANCH}" == "master" ]] && BASE_COMMIT_SHA=$(git rev-parse HEAD~1) || BASE_COMMIT_SHA=$(git merge-base ${CIRCLE_BRANCH} origin/master)
+#            bash <(curl -s https://codecov.io/bash) -N ${BASE_COMMIT_SHA} -f reports/coverage-unit.xml -F total,unit_tests &&
+#            bash <(curl -s https://codecov.io/bash) -N ${BASE_COMMIT_SHA} -f reports/coverage-integration.xml -F total,integration_tests
+      - store_artifacts:
+          path: reports/coverage-report
+      - store_test_results:
+          path: reports
+  build_and_push:
+    machine:
+      image: ubuntu-2004:202107-02
+    steps:
+      - checkout
+      - run:
+          name: Install dev libraries
+          command: pip3 install poetry
+      - run:
+          name: Check if build needed
+          command: |
+            export DOCKER_CLI_EXPERIMENTAL=enabled
+            IMAGE_VERSION="$(poetry version -s)"
+            tag_exists="$(docker manifest inspect << pipeline.parameters.dockerhub_username >>/<< pipeline.parameters.project_name >>:$IMAGE_VERSION >/dev/null 2>&1; echo $?)"
+            if [[ $tag_exists -eq 0 ]]; then
+              echo "Image tag '$IMAGE_VERSION' already exists in the repository. Skipping job."
+              circleci-agent step halt
+            else
+              echo "Image tag '$IMAGE_VERSION' doesn't exist in the repository. Running build."
+            fi
+      - restore_cache:
+          key: << pipeline.parameters.cache_version >>-docker-build-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
+      - run:
+          name: Install dev libraries
+          command: poetry install --no-ansi
+      - save_cache:
+          key: << pipeline.parameters.cache_version >>-docker-build-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
+          paths:
+            - ".venv"
+      - run:
+          name: Create and use a new docker build driver
+          command: |
+            docker buildx create --use
+      - run:
+          name: Build and push docker image
+          command: |
+            poetry run inv docker-build
+  release:
+    working_directory: << pipeline.parameters.working_directory >>
+    docker:
+      - image: circleci/python:<< pipeline.parameters.python_version >>
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python<< pipeline.parameters.python_version >>/site-packages
+      - restore_cache:
+          key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
+      - gh/setup
+      - run:
+          name: Tag release
+          command: |
+            gh release create $(poetry version -s) -F CHANGELOG.md
+
+workflows:
+  version: 2
+  all_pipelines:
+    jobs:
+      - test:
+          context: mqtt-influxdb-gateway
+          name: Tests
+      - build_and_push:
+          name: Build and push docker image
+          context:
+            - dockerhub
+          requires:
+            - Tests
+          filters:
+            branches:
+              only: main
+      - release:
+          context:
+            - github
+          requires:
+            - Build and push docker image
+          filters:
+            branches:
+              only: main

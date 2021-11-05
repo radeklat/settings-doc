@@ -1,0 +1,23 @@
+-- A debug YAML file printing what the templates receive
+heading_offset: {{ heading_offset }}
+
+fields:
+{% for field in fields %}
+- name: {{ field.name }}
+    {% for attr_name in field.__slots__ %}
+        {% if field|attr(attr_name) and attr_name != "field_info" and attr_name != "name" %}
+  {{ attr_name }}: "{{ field|attr(attr_name) }}"
+        {% endif %}
+    {% endfor %}
+  - field_info:
+    {% for attr_name in field.field_info.__slots__ %}
+        {% if field.field_info|attr(attr_name) and attr_name != "extra" %}
+    {{ attr_name }}: "{{ field.field_info|attr(attr_name) }}"
+        {% endif %}
+    {% endfor %}
+    - extra:
+    {% for key, value in field.field_info.extra.items() %}
+      {{ key }}: "{{ value }}"
+    {% endfor %}
+
+{% endfor %}

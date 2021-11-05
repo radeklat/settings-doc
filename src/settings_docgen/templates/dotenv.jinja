@@ -1,0 +1,41 @@
+{#
+    The `--heading-offset` command line parameter is exposed as `heading_offset` variable.
+
+    See https://github.com/samuelcolvin/pydantic/blob/master/pydantic/fields.py for field structure.
+    Each `field` in `fields` is instance of `ModelField`.
+    Extra parameters unknown to pydantic are stored in `field.field_info.extra`.
+
+    To see all possible values, run this generator with `--format yaml`.
+#}
+{% for field in fields %}
+    {% if field.field_info.description %}
+# {{ field.field_info.description|replace("\n", "\n# ") }}
+    {% endif %}
+    {% if field.field_info.extra["possible_values"] %}
+        {% set possible_values = field.field_info.extra["possible_values"] %}
+    {% elif field.type_.__class__.__name__ == "_LiteralGenericAlias" %}
+        {% set possible_values = field.type_.__args__ %}
+    {% endif %}
+    {% if possible_values %}
+        {% set possible_values_line = "`" + possible_values|join("`, `") + "`" %}
+# Possible values:
+        {% if possible_values_line|length <= 75 %}
+#   {{ possible_values_line }}
+        {% else %}
+            {% for value in possible_values %}
+                {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
+                    {% if value|length == 2 %}
+#   - `{{ value[0] }}`: {{ value[1]|replace("\n", "\n# ") }}
+                    {% else %}
+#   - `{{ value[0] }}`
+                    {% endif %}
+                {% else %}
+#   - `{{ value }}`
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% if not field.required %}# {% endif %}{{ field.field_info.extra["env_names"]|list|first|upper }}={% if field.default != None %}{{ field.default }}{% endif %}
+
+
+{% endfor %}
