@@ -24,7 +24,7 @@ class OutputFormat(Enum):
         return name.lower()
 
     DOTENV = auto()
-    MD = auto()
+    MARKDOWN = auto()
     DEBUG = auto()
 
 
