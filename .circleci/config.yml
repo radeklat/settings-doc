@@ -112,7 +112,7 @@ jobs: # A basic unit of work in a run
           command: |
             VERSION=$(poetry version -s)
             curl -Ls https://pypi.org/pypi/<< pipeline.parameters.project_name >>/json | \
-              jq -r '.releases | keys_unsorted | sort_by( split(".") | map(tonumber) )' | \
+              jq -r '.releases | keys_unsorted' | \
               grep -q "\"$VERSION\""
             if [[ $? -ne 0 ]]; then
               poetry publish --username "__token__" --password $PYPI_API_TOKEN
