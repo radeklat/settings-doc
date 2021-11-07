@@ -32,7 +32,8 @@ def install() -> Iterator[CompletedProcess]:
 
 @contextmanager
 def patch_pythonpath() -> Iterator[None]:
-    if pythonpath := os.getenv("PYTHONPATH", ""):
+    pythonpath = os.getenv("PYTHONPATH", "")
+    if pythonpath:
         pythonpath += ":"
     pythonpath += str(Path(__file__).parent.parent.parent)
 

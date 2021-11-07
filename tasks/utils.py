@@ -4,8 +4,8 @@ import re
 import shutil
 from pathlib import Path
 
-from invoke import task
-from termcolor import cprint
+from click import secho
+from invoke import Exit, task
 
 
 class ProjectInfo:
@@ -38,7 +38,7 @@ def read_contents(fpath: str, strip_newline=True) -> str:
 
 def format_messages(messages: str, success_pattern: str = "^$"):
     if re.match(success_pattern, messages, re.DOTALL):
-        cprint("✔ No issues found.", "green")
+        secho("✔ No issues found.", fg="green")
     else:
         print(messages)
 
@@ -83,7 +83,31 @@ def switch_python_version(ctx, version):
         version (str): Desired Python version. You can use only MAJOR.MINOR (for example 3.6).
     """
     print_header(f"Switching to Python {version}", icon="🐍")
+
+    pyenv_python_version = None
+    python_versions = sorted(
+        (_ for _ in ctx.run("pyenv versions --bare", hide="stdout").stdout.split("\n") if _),
+        key=lambda value: list(map(int, value.split("."))),  # sort numerically
+    )
+
+    for python_version in python_versions:
+        if python_version.startswith(version):
+            pyenv_python_version = python_version
+            secho(f"✔ Found pyenv Python version '{pyenv_python_version}'.\n", fg="green")
+
+    if not pyenv_python_version:
+        available_python_versions = ", ".join(f"'{_}'" for _ in python_versions)
+        secho(f"❌ No pyenv Python version matching Python {version} found.\n", fg="red")
+        print(
+            f"Available versions: {available_python_versions}.\n"
+            f"See all installable versions with:\n"
+            f"\tpyenv install --list\n"
+            f"and install it with:\n"
+            f"\tpyenv install <PYTHON_VERSION>",
+        )
+        raise Exit()
+
     ctx.run(
-        f"source deactivate; git clean -fxd .venv && pipenv sync --python {version} -d",
+        f"source deactivate; git clean -fxd .venv && pyenv local {pyenv_python_version} && poetry install",
         pty=True,
     )

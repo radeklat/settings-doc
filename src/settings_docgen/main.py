@@ -1,7 +1,8 @@
 import importlib
 from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
-from functools import cache
+from functools import lru_cache
+from inspect import isclass
 from pathlib import Path
 from typing import Any, Type
 
@@ -14,6 +15,7 @@ app = Typer()
 
 
 class OutputFormat(Enum):
+    # noinspection PyMethodParameters
     def _generate_next_value_(name, start, count, last_values):  # pylint: disable=no-self-argument
         del start, count, last_values
         return name.lower()  # pylint: disable=no-member
@@ -23,7 +25,7 @@ class OutputFormat(Enum):
     DEBUG = auto()
 
 
-@cache
+@lru_cache(maxsize=None)  # Python 3.9+: use functools.cache
 def import_class_path(class_path: str) -> Type[BaseSettings]:
     module, class_name = class_path.rsplit(".", maxsplit=1)
     try:
@@ -34,13 +36,13 @@ def import_class_path(class_path: str) -> Type[BaseSettings]:
             cause = "Relative imports are not supported."
         raise BadParameter(f"Cannot read the settings class: {cause}") from exc
 
-    try:
-        if issubclass(settings, BaseSettings):
-            return settings
-    except TypeError as exc:
-        raise BadParameter(f"Target '{class_name}' in module '{module}' is not a class.") from exc
+    if not isclass(settings):
+        raise BadParameter(f"Target '{class_name}' in module '{module}' is not a class.")
 
-    raise BadParameter(f"Target class must be a subclass of BaseSettings but '{settings.__name__}' found.")
+    if not issubclass(settings, BaseSettings):
+        raise BadParameter(f"Target class must be a subclass of BaseSettings but '{settings.__name__}' found.")
+
+    return settings
 
 
 def class_path_callback(value: str) -> str:

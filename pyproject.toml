@@ -10,7 +10,7 @@ readme = "README.md"
 settings-docgen = "settings_docgen.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6.2"
 termcolor = "^1.1.0"
 Jinja2 = "^3.0.2"
 pydantic = "^1.8.2"
@@ -32,6 +32,8 @@ invoke = "^1.6.0"
 types-termcolor = "*"
 pytest-mock = "^3.6.1"
 types-toml = "*"
+click = "^8.0.3"
+types-dataclasses = {version = "*", markers = "python_version < '3.7'"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
