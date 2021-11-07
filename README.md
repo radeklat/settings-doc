@@ -17,3 +17,10 @@
 ```
 pip install settings-docgen
 ```
+
+# TODOs
+
+- Improve this README
+  - Add usage instructions
+  - Add features overview
+- Add an update flag to update existing documents between two marks
