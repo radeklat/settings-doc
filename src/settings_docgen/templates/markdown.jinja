@@ -11,14 +11,16 @@
     {{ '#' * (heading_offset + level) }}
 {%- endmacro %}
 {{ heading() }} Environment variables
-{% for field in fields %}
 
+{% for field in fields %}
 {{ heading(2) }} `{{ field.field_info.extra["env_names"]|list|first|upper }}`
 
 *{% if field.required %}*Required*{% else %}Optional{% endif %}*{% if field.default != None %}, default value: `{{ field.default }}`{% endif %}
 
+{% if field.field_info.description %}
 
 {{ field.field_info.description }}
+{% endif %}
     {% if field.field_info.extra["example"] %}
 
 {{ heading(3) }} Examples
@@ -35,7 +37,15 @@
 {{ heading(3) }} Possible values
 
         {% if not is_values_with_descriptions(possible_values) %}
+            {% if possible_values|join("`, `")|length + 2 <= 75 %}
 `{{ possible_values|join("`, `") }}`
+
+            {% else %}
+                {% for value in possible_values %}
+- `{{ value }}`
+
+                {% endfor %}
+            {% endif %}
         {% else %}
             {% for value in possible_values %}
                 {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
@@ -48,6 +58,7 @@
 - `{{ value }}`
                 {% endif %}
             {% endfor %}
+
         {% endif %}
     {% endif %}
 {% endfor %}

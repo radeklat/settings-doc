@@ -30,6 +30,8 @@ pydocstyle = "^6.1.1"
 pytest-dotenv = "^0.5.2"
 invoke = "^1.6.0"
 types-termcolor = "*"
+pytest-mock = "^3.6.1"
+types-toml = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

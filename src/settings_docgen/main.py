@@ -1,27 +1,22 @@
 import importlib
-from collections import Iterable as IterableCollection
+from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
 from functools import cache
 from pathlib import Path
 from typing import Any, Type
 
-from click import BadParameter
+from click import Abort, BadParameter, secho
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pydantic import BaseSettings
-from typer import Option, Typer
-
-
-class ValidationError(Exception):
-    pass
-
+from typer import Option, Typer, colors
 
 app = Typer()
 
 
 class OutputFormat(Enum):
-    def _generate_next_value_(name: str, start, count, last_values):
+    def _generate_next_value_(name, start, count, last_values):  # pylint: disable=no-self-argument
         del start, count, last_values
-        return name.lower()
+        return name.lower()  # pylint: disable=no-member
 
     DOTENV = auto()
     MARKDOWN = auto()
@@ -34,10 +29,16 @@ def import_class_path(class_path: str) -> Type[BaseSettings]:
     try:
         settings = getattr(importlib.import_module(module), class_name)
     except (AttributeError, ModuleNotFoundError, TypeError) as exc:
-        raise BadParameter(f"Cannot read the settings class: {exc}") from exc
+        cause = str(exc)
+        if isinstance(exc, TypeError) and "relative import" in cause:
+            cause = "Relative imports are not supported."
+        raise BadParameter(f"Cannot read the settings class: {cause}") from exc
 
-    if issubclass(settings, BaseSettings):
-        return settings
+    try:
+        if issubclass(settings, BaseSettings):
+            return settings
+    except TypeError as exc:
+        raise BadParameter(f"Target '{class_name}' in module '{module}' is not a class.") from exc
 
     raise BadParameter(f"Target class must be a subclass of BaseSettings but '{settings.__name__}' found.")
 
@@ -49,7 +50,8 @@ def class_path_callback(value: str) -> str:
 
 def is_values_with_descriptions(value: Any) -> bool:
     if not isinstance(value, IterableCollection):
-        return False
+        secho(f"`possible_values` must be iterable but `{value}` used.", fg=colors.RED)
+        raise Abort()
 
     return all(list(map(lambda item: isinstance(item, tuple) and 2 >= len(item) >= 1, value)))
 
