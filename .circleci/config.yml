@@ -125,7 +125,7 @@ jobs: # A basic unit of work in a run
       - run:
           name: Tag release
           command: |
-            gh release create $(poetry version -s) -F CHANGELOG.md
+            gh release create $(poetry version -s) -F CHANGELOG.md || true  # ignore existing tags
 
 workflows:
   version: 2
