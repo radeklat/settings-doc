@@ -111,10 +111,12 @@ jobs: # A basic unit of work in a run
           name: Upload to pypi
           command: |
             VERSION=$(poetry version -s)
-            curl -Ls https://pypi.org/pypi/<< pipeline.parameters.project_name >>/json | \
-              jq -r '.releases | keys_unsorted' | \
-              grep -q "\"$VERSION\""
-            if [[ $? -ne 0 ]]; then
+            VERSION_EXISTS=$( \
+              curl -Ls https://pypi.org/pypi/<< pipeline.parameters.project_name >>/json | \
+                jq -r '.releases | keys_unsorted' | \
+                grep -q "\"$VERSION\"" ; echo $? \
+            )
+            if [[ $VERSION_EXISTS -ne 0 ]]; then
               poetry publish --username "__token__" --password $PYPI_API_TOKEN
             else
               echo "Package with this version has been already release. Skipping."
@@ -136,8 +138,7 @@ jobs: # A basic unit of work in a run
           command: |
             git fetch --tags origin
             VERSION=$(poetry version -s)
-            git tag | grep -q $VERSION
-            if [[ $? -ne 0 ]]; then
+            if [[ $(git tag | grep -q $VERSION; echo $?) -ne 0 ]]; then
               gh release create $VERSION -F CHANGELOG.md
             else
               echo "Tag '$VERSION' already exists. Skipping."
