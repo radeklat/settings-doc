@@ -14,6 +14,13 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [0.2.0] - 2011-11-09
+
+### Added
+
+- Option `--update` to overwrite an existing file.
+- Option `--between` to update only a portion of a file specified by `--update`, between two given marks.
+
 ## [0.1.1] - 2011-11-07
 
 ### Fixed
@@ -24,6 +31,7 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-docgen/compare/0.1.1...HEAD
+[Unreleased]: https://github.com/radeklat/settings-docgen/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/radeklat/settings-docgen/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/radeklat/settings-docgen/compare/0.1.0...0.1.0
 [0.1.0]: https://github.com/radeklat/settings-docgen/compare/initial...0.1.0
