@@ -15,6 +15,6 @@ def run_app_with_settings(
 
     mocker.patch("settings_doc.main.import_class_path", return_value=settings)
     result = runner.invoke(
-        app, ["--class", "MockedClass", "--output-format", "markdown"] + args, catch_exceptions=False
+        app, ["generate", "--class", "MockedClass", "--output-format", "markdown"] + args, catch_exceptions=False
     )
     return result.stdout.lower()
