@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/settings-docgen.iml" filepath="$PROJECT_DIR$/.idea/settings-docgen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/settings-doc.iml" filepath="$PROJECT_DIR$/.idea/settings-doc.iml" />
     </modules>
   </component>
 </project>

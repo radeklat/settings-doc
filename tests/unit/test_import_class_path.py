@@ -2,7 +2,7 @@ import pytest
 from click import BadParameter
 from pydantic import BaseSettings
 
-from settings_docgen.main import import_class_path
+from settings_doc.main import import_class_path
 
 _PREFIX = "Cannot read the settings class: "
 
@@ -33,13 +33,13 @@ class TestImportClassPath:
                 id="relative import is attempted",
             ),
             pytest.param(
-                "src.settings_docgen.main.OutputFormat",
+                "src.settings_doc.main.OutputFormat",
                 "Target class must be a subclass of BaseSettings but 'OutputFormat' found.",
                 id="found class is not a subclass of BaseSettings",
             ),
             pytest.param(
-                "src.settings_docgen.main.app",
-                "Target 'app' in module 'src.settings_docgen.main' is not a class.",
+                "src.settings_doc.main.app",
+                "Target 'app' in module 'src.settings_doc.main' is not a class.",
                 id="found class is not a class",
             ),
         ],

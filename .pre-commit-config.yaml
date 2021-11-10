@@ -1,6 +1,6 @@
 # See https://pre-commit.com/ for usage and config
 default_language_version:
-  python: python3.8
+  python: python3.6
 repos:
 - repo: local
   hooks:

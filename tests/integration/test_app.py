@@ -71,7 +71,7 @@ class TestMain:
         sys.argv = [sys.argv[0]] + command_line_args
         with patch_pythonpath():
             try:
-                run_module("settings_docgen.main", run_name="__main__")
+                run_module("settings_doc.main", run_name="__main__")
             except SystemExit as exc:
                 if exc.code != 0:
                     raise

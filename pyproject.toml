@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "settings-docgen"
-version = "0.2.0"
+name = "settings-doc"
+version = "0.3.0"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"
@@ -29,10 +29,10 @@ classifiers = [
     "Typing :: Typed",
 ]
 keywords = ["documentation", "environment variables", "generated", "markdown", "BaseSettings"]
-homepage = "https://github.com/radeklat/settings-docgen"
+homepage = "https://github.com/radeklat/settings-doc"
 
 [tool.poetry.scripts]
-settings-docgen = "settings_docgen.main:app"
+settings-doc = "settings_doc.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.6.2"
@@ -59,6 +59,7 @@ pytest-mock = "^3.6.1"
 types-toml = "*"
 click = "^8.0.3"
 types-dataclasses = {version = "*", markers = "python_version < '3.7'"}
+dataclasses = {version = "*", markers = "python_version < '3.7'"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

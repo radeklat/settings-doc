@@ -9,8 +9,8 @@ from tests.fixtures.example_settings import EmptySettings
 from tests.unit.helpers import run_app_with_settings
 
 _OLD_CONTENT = "this is an old content"
-_START_MARK = "<!-- settings-docgen START -->"
-_END_MARK = "<!-- settings-docgen END -->"
+_START_MARK = "<!-- settings-doc START -->"
+_END_MARK = "<!-- settings-doc END -->"
 
 
 def _run_app_update(mocker: MockerFixture, runner: CliRunner, content: str, *args: str) -> Tuple[str, str]:

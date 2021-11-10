@@ -4,7 +4,7 @@ from pydantic import BaseSettings
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
-from settings_docgen.main import app
+from settings_doc.main import app
 
 
 def run_app_with_settings(
@@ -13,7 +13,7 @@ def run_app_with_settings(
     if args is None:
         args = []
 
-    mocker.patch("settings_docgen.main.import_class_path", return_value=settings)
+    mocker.patch("settings_doc.main.import_class_path", return_value=settings)
     result = runner.invoke(
         app, ["--class", "MockedClass", "--output-format", "markdown"] + args, catch_exceptions=False
     )
