@@ -43,7 +43,7 @@ def patch_pythonpath() -> Iterator[None]:
 
 @pytest.fixture()
 def command_line_args() -> List[str]:
-    return ["--class", "tests.fixtures.example_settings.EmptySettings", "--output-format", "markdown"]
+    return ["generate", "--class", "tests.fixtures.example_settings.EmptySettings", "--output-format", "markdown"]
 
 
 class TestApp:

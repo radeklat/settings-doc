@@ -11,7 +11,7 @@ from tests.fixtures.example_settings import (
     PossibleValuesNotIterableSettings,
     RequiredSettings,
 )
-from tests.unit.helpers import run_app_with_settings
+from tests.helpers import run_app_with_settings
 
 
 class TestMarkdownFormat:

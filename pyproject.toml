@@ -104,7 +104,7 @@ env_files = ".env.test"
 # Values:    https://docs.python.org/3/library/warnings.html#describing-warning-filters
 #            action:message:category:module:line
 filterwarnings = [
-
+    "ignore:'settings_doc.main' found in sys.modules after import of package 'settings_doc', but prior to execution of 'settings_doc.main'; this may result in unpredictable behaviour::runpy"
 ]
 
 markers = [

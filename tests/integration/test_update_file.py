@@ -6,7 +6,7 @@ from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
 from tests.fixtures.example_settings import EmptySettings
-from tests.unit.helpers import run_app_with_settings
+from tests.helpers import run_app_with_settings
 
 _OLD_CONTENT = "this is an old content"
 _START_MARK = "<!-- settings-doc START -->"

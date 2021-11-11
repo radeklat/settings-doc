@@ -1,9 +1,11 @@
 import importlib
 import re
+import shutil
 from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
 from functools import lru_cache
 from inspect import isclass
+from os import listdir
 from pathlib import Path
 from typing import Any, List, Optional, Tuple, Type
 
@@ -13,6 +15,9 @@ from pydantic import BaseSettings
 from typer import Option, Typer, colors
 
 app = Typer()
+
+
+TEMPLATES_FOLDER: Path = Path(__file__).parent / "templates"
 
 
 class OutputFormat(Enum):
@@ -60,7 +65,7 @@ def is_values_with_descriptions(value: Any) -> bool:
 
 
 @app.command()
-def main(
+def generate(
     class_path: str = Option(
         ...,
         "--class",
@@ -107,7 +112,7 @@ def main(
     render_kwargs = {"heading_offset": heading_offset, "fields": settings.__fields__.values()}
 
     env = Environment(
-        loader=FileSystemLoader(templates + [Path(__file__).parent / "templates"]),
+        loader=FileSystemLoader(templates + [TEMPLATES_FOLDER]),
         autoescape=select_autoescape(),
         trim_blocks=True,
         lstrip_blocks=True,
@@ -139,6 +144,23 @@ def main(
             new_content = render
 
         file.write(new_content)
+
+
+@app.command("templates")
+def manipulate_templates(
+    copy_to: Path = Option(
+        ...,
+        exists=True,
+        writable=True,
+        file_okay=False,
+        dir_okay=True,
+        resolve_path=True,
+        help="Output folder. Any existing templates with the same names with be overwritten.",
+    ),
+):
+    """Copies built-in Jinja2 templates into a folder for modifying."""
+    for file in listdir(TEMPLATES_FOLDER):
+        shutil.copy2(TEMPLATES_FOLDER / file, copy_to)
 
 
 if __name__ == "__main__":
