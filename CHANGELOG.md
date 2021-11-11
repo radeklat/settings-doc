@@ -14,6 +14,16 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [0.4.0] - 2021-11-11
+
+### Changed
+
+- All existing options moved in the `generate` sub-command.
+
+### Added
+
+- New sub-command `templates` for copying templates into selected folder.
+
 ## [0.3.0] - 2021-11-10
 
 ### Changed
@@ -37,7 +47,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/radeklat/settings-doc/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/radeklat/settings-doc/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/radeklat/settings-doc/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/radeklat/settings-doc/compare/0.1.0...0.1.0
