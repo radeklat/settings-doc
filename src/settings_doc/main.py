@@ -103,8 +103,9 @@ def generate(
         file_okay=False,
         dir_okay=True,
         resolve_path=True,
-        help="One or more folders in a priority order to use when looking up templates for "
-        "generating output. Built-in templates will be used last if no matches found.",
+        help="Folder to use when looking up templates for generating output. Can be used "
+        "more than once, in a priority order. Built-in templates will be used last if no "
+        "matches found.",
     ),
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""

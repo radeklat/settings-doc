@@ -2,20 +2,17 @@ import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from typer.testing import CliRunner, Result
+from typer.testing import CliRunner
 
-from settings_doc.main import TEMPLATES_FOLDER, app
-
-
-def _copy_templates(runner: CliRunner, folder: str) -> Result:
-    return runner.invoke(app, ["templates", "--copy-to", folder], catch_exceptions=False)
+from settings_doc.main import TEMPLATES_FOLDER
+from tests.helpers import copy_templates
 
 
 class TestTemplatesCopy:
     @staticmethod
     def should_copy_templates_into_selected_folder(runner: CliRunner):
         with TemporaryDirectory() as folder:
-            result = _copy_templates(runner, folder)
+            result = copy_templates(runner, folder)
             files = os.listdir(folder)
 
         assert result.stdout == ""
@@ -24,7 +21,7 @@ class TestTemplatesCopy:
     @staticmethod
     def should_overwrite_existing_files(runner: CliRunner):
         with TemporaryDirectory() as folder:
-            _copy_templates(runner, folder)
+            copy_templates(runner, folder)
             files = os.listdir(folder)
             filename = Path(folder) / files[0]
 
@@ -34,7 +31,7 @@ class TestTemplatesCopy:
             with open(filename, "w", encoding="utf-8") as file:
                 file.write("existing content")
 
-            _copy_templates(runner, folder)
+            copy_templates(runner, folder)
 
             with open(filename, "r", encoding="utf-8") as file:
                 new_content = file.read()
