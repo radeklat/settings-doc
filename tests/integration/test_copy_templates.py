@@ -1,4 +1,4 @@
-from os import listdir
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -16,16 +16,16 @@ class TestTemplatesCopy:
     def should_copy_templates_into_selected_folder(runner: CliRunner):
         with TemporaryDirectory() as folder:
             result = _copy_templates(runner, folder)
-            files = listdir(folder)
+            files = os.listdir(folder)
 
         assert result.stdout == ""
-        assert set(files) == set(listdir(TEMPLATES_FOLDER))
+        assert set(files) == set(os.listdir(TEMPLATES_FOLDER))
 
     @staticmethod
     def should_overwrite_existing_files(runner: CliRunner):
         with TemporaryDirectory() as folder:
             _copy_templates(runner, folder)
-            files = listdir(folder)
+            files = os.listdir(folder)
             filename = Path(folder) / files[0]
 
             with open(filename, "r", encoding="utf-8") as file:

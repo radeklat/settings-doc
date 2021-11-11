@@ -145,8 +145,8 @@ def generate(
         file.write(new_content)
 
 
-@app.command()
-def templates(
+@app.command("templates")
+def manipulate_templates(
     copy_to: Path = Option(
         ...,
         exists=False,
