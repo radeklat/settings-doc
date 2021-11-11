@@ -150,7 +150,7 @@ def generate(
 def manipulate_templates(
     copy_to: Path = Option(
         ...,
-        exists=False,
+        exists=True,
         writable=True,
         file_okay=False,
         dir_okay=True,
