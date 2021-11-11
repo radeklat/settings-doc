@@ -158,7 +158,7 @@ def manipulate_templates(
     ),
 ):
     """Copies built-in Jinja2 templates into a folder for modifying."""
-    shutil.copytree(TEMPLATES_FOLDER, copy_to, dirs_exist_ok=True)
+    shutil.copytree(TEMPLATES_FOLDER, copy_to)
 
 
 if __name__ == "__main__":
