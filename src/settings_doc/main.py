@@ -6,7 +6,7 @@ from enum import Enum, auto
 from functools import lru_cache
 from inspect import isclass
 from pathlib import Path
-from typing import Any, Final, List, Optional, Tuple, Type
+from typing import Any, List, Optional, Tuple, Type
 
 from click import Abort, BadParameter, secho
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -16,7 +16,7 @@ from typer import Option, Typer, colors
 app = Typer()
 
 
-TEMPLATES_FOLDER: Final[Path] = Path(__file__).parent / "templates"
+TEMPLATES_FOLDER: Path = Path(__file__).parent / "templates"
 
 
 class OutputFormat(Enum):
