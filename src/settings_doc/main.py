@@ -5,6 +5,7 @@ from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
 from functools import lru_cache
 from inspect import isclass
+from os import listdir
 from pathlib import Path
 from typing import Any, List, Optional, Tuple, Type
 
@@ -158,7 +159,8 @@ def manipulate_templates(
     ),
 ):
     """Copies built-in Jinja2 templates into a folder for modifying."""
-    shutil.copytree(TEMPLATES_FOLDER, copy_to)
+    for file in listdir(TEMPLATES_FOLDER):
+        shutil.copy2(TEMPLATES_FOLDER / file, copy_to)
 
 
 if __name__ == "__main__":
