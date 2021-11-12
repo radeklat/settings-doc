@@ -1,4 +1,4 @@
-<h1 align="center" style="border-bottom: none;">:gear::memo:&nbsp;&nbsp; Settings DocGen &nbsp;&nbsp;:memo::gear:</h1>
+<h1 align="center" style="border-bottom: none;">⚙&nbsp;📝&nbsp;&nbsp;Settings&nbsp;DocGen&nbsp;&nbsp;📝&nbsp;⚙</h1>
 <h3 align="center">A command line tool for generating Markdown documentation and .env files from <a href="https://pydantic-docs.helpmanual.io/usage/settings">pydantic.BaseSettings</a>.</h3>
 
 <p align="center">

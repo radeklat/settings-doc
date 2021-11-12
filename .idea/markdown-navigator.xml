@@ -3,7 +3,7 @@
   <component name="MarkdownProjectSettings">
     <PreviewSettings splitEditorLayout="SPLIT" splitEditorPreview="PREVIEW" useGrayscaleRendering="false" zoomFactor="1.0" maxImageWidth="0" synchronizePreviewPosition="true" highlightPreviewType="LINE" highlightFadeOut="5" highlightOnTyping="true" synchronizeSourcePosition="true" verticallyAlignSourceAndPreviewSyncPosition="true" showSearchHighlightsInPreview="true" showSelectionInPreview="true" lastLayoutSetsDefault="false">
       <PanelProvider>
-        <provider providerId="com.vladsch.md.nav.editor.javafx.html.panel" providerName="JavaFX WebView" />
+        <provider providerId="com.vladsch.md.nav.editor.jbcef.html.panel" providerName="Java Chromium Embedded" />
       </PanelProvider>
     </PreviewSettings>
     <ParserSettings gitHubSyntaxChange="false" correctedInvalidSettings="false" emojiShortcuts="1" emojiImages="0">
