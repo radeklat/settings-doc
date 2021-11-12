@@ -125,6 +125,8 @@ or `.env` file:
 # LOGGING_LEVEL=WARNING
 ```
 
+You can find even more complex usage of `settings-doc` in [one of my other projects](https://github.com/radeklat/mqtt-influxdb-gateway/blob/main/README.md#environment-variables).
+
 ## Updating existing documentation
 
 You may want to generate the documentation into and existing document. To fit with the heading structure, you can adjust the heading levels with `--heading-offset`. Additionally, you can specify the location where to generate the documentation with two marks set by `--between <START MARK> <END MARK>`.
