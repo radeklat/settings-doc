@@ -25,11 +25,11 @@ It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) temp
 # Table of content
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Minimal documentation](#minimal-documentation)
+  - [Minimal example](#minimal-example)
   - [Adding more information](#adding-more-information)
   - [Updating existing documentation](#updating-existing-documentation)
-  - [Customising templates](#customising-templates)
-  - [Custom values in the templates](#custom-values-in-the-templates)
+  - [Custom templates](#custom-templates)
+  - [Custom settings attributes in templates](#custom-settings-attributes-in-templates)
 - [Features overview](#features-overview)
   - [Markdown](#markdown)
   - [.env](#env)
@@ -64,9 +64,7 @@ settings-doc generate --class src.settings.AppSettings --output-format markdown
 Which will output:
 
 ```markdown
-# Environment variables
-
-## `LOGGING_LEVEL`
+# `LOGGING_LEVEL`
 
 **Required**
 ```
@@ -103,19 +101,17 @@ class AppSettings(BaseSettings):
 Which will generate the following markdown:
 
 ```markdown
-# Environment variables
-
-## `LOGGING_LEVEL`
+# `LOGGING_LEVEL`
 
 *Optional*, default value: `WARNING`
 
 Log level.
 
-### Examples
+## Examples
 
 `WARNING`
 
-### Possible values
+## Possible values
 
 `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
 ```
@@ -162,20 +158,19 @@ the updated `README.md` will get only the specified location overwritten:
 
 This app is distributes as a docker image and configurable via environment variables. See the list below:
 
+# Environment variables
 <!-- generated env. vars. start -->
-## Environment variables
-
-### `LOGGING_LEVEL`
+## `LOGGING_LEVEL`
 
 *Optional*, default value: `WARNING`
 
 Log level.
 
-#### Examples
+### Examples
 
 `WARNING`
 
-#### Possible values
+### Possible values
 
 `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
 <!-- generated env. vars. end -->

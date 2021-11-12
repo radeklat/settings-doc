@@ -6,6 +6,7 @@ from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
 from tests.fixtures.example_settings import (
+    SETTINGS_MARKDOWN_FIRST_LINE,
     EmptySettings,
     FullSettings,
     PossibleValuesNotIterableSettings,
@@ -19,13 +20,12 @@ class TestMarkdownFormat:
     @pytest.mark.parametrize(
         "expected_string",
         [
-            pytest.param("# environment variables\n\n", id="section name"),
-            pytest.param("\n\n## `var`\n\n", id="variable name"),
+            pytest.param(f"{SETTINGS_MARKDOWN_FIRST_LINE}\n", id="variable name"),
             pytest.param("\n\n*optional*, ", id="optional flag"),
             pytest.param(", default value: `some_value`\n\n", id="default value"),
             pytest.param("\n\nuse it like this\n\n", id="description"),
-            pytest.param("\n\n### examples\n\nthis is an example use\n\n", id="example"),
-            pytest.param("\n\n### possible values\n\n`aaa`, `bbb`\n\n", id="possible values"),
+            pytest.param("\n\n## examples\n\nthis is an example use\n\n", id="example"),
+            pytest.param("\n\n## possible values\n\n`aaa`, `bbb`\n\n", id="possible values"),
         ],
     )
     def should_generate(runner: CliRunner, mocker: MockerFixture, expected_string: str):
@@ -70,18 +70,18 @@ class TestMarkdownFormat:
         class Settings(BaseSettings):
             var: str = Field(..., possible_values=possible_values)
 
-        assert f"### possible values\n\n{expected_string}\n\n" in run_app_with_settings(mocker, runner, Settings)
+        assert f"## possible values\n\n{expected_string}\n\n" in run_app_with_settings(mocker, runner, Settings)
 
     @staticmethod
     def should_not_show_missing_description_example_possible_and_default_values(
         runner: CliRunner, mocker: MockerFixture
     ):
-        expected_string = "# environment variables\n\n## `var`\n\n**required**\n\n"
+        expected_string = f"{SETTINGS_MARKDOWN_FIRST_LINE}\n**required**\n\n"
         assert run_app_with_settings(mocker, runner, EmptySettings) == expected_string
 
     @staticmethod
     def should_offset_headings_if_requested(runner: CliRunner, mocker: MockerFixture):
-        expected_string = "## environment variables\n\n### `var`"
+        expected_string = f"#{SETTINGS_MARKDOWN_FIRST_LINE}"
         assert expected_string in run_app_with_settings(mocker, runner, EmptySettings, ["--heading-offset", "1"])
 
     @staticmethod

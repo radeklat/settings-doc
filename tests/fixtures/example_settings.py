@@ -1,12 +1,15 @@
 from pydantic import BaseSettings, Field
 
+SETTINGS_ATTR = "logging_level"
+SETTINGS_MARKDOWN_FIRST_LINE = f"# `{SETTINGS_ATTR}`\n"
+
 
 class EmptySettings(BaseSettings):
-    var: str
+    logging_level: str
 
 
 class FullSettings(BaseSettings):
-    var: str = Field(
+    logging_level: str = Field(
         "some_value",
         description="use it like this",
         example="this is an example use",
@@ -15,8 +18,8 @@ class FullSettings(BaseSettings):
 
 
 class RequiredSettings(BaseSettings):
-    var: str = Field(..., description="use it like this")
+    logging_level: str = Field(..., description="use it like this")
 
 
 class PossibleValuesNotIterableSettings(BaseSettings):
-    var: str = Field(..., possible_values=123456)
+    logging_level: str = Field(..., possible_values=123456)

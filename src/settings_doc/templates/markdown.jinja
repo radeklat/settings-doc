@@ -7,13 +7,11 @@
 
     To see all possible values, run this generator with `--format debug`.
 #}
-{% macro heading(level=1) -%}
+{% macro heading(level) -%}
     {{ '#' * (heading_offset + level) }}
 {%- endmacro %}
-{{ heading() }} Environment variables
-
 {% for field in fields %}
-{{ heading(2) }} `{{ field.field_info.extra["env_names"]|list|first|upper }}`
+{{ heading(1) }} `{{ field.field_info.extra["env_names"]|list|first|upper }}`
 
 *{% if field.required %}*Required*{% else %}Optional{% endif %}*{% if field.default != None %}, default value: `{{ field.default }}`{% endif %}
 
@@ -23,7 +21,7 @@
 {% endif %}
     {% if field.field_info.extra["example"] %}
 
-{{ heading(3) }} Examples
+{{ heading(2) }} Examples
 
 {{ field.field_info.extra["example"] }}
     {% endif %}
@@ -34,7 +32,7 @@
     {% endif %}
     {% if possible_values %}
 
-{{ heading(3) }} Possible values
+{{ heading(2) }} Possible values
 
         {% if not is_values_with_descriptions(possible_values) %}
             {% if possible_values|join("`, `")|length + 2 <= 75 %}

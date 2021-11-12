@@ -5,7 +5,7 @@ from typing import Tuple
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
-from tests.fixtures.example_settings import EmptySettings
+from tests.fixtures.example_settings import SETTINGS_MARKDOWN_FIRST_LINE, EmptySettings
 from tests.helpers import run_app_with_settings
 
 _OLD_CONTENT = "this is an old content"
@@ -33,7 +33,7 @@ class TestUpdateFileOption:
 
         assert stdout == ""
         assert _OLD_CONTENT not in new_content
-        assert "# `var`" in new_content
+        assert SETTINGS_MARKDOWN_FIRST_LINE in new_content
 
     @staticmethod
     def should_overwrite_part_of_the_file_when_between_option_set(runner: CliRunner, mocker: MockerFixture):
@@ -45,7 +45,7 @@ class TestUpdateFileOption:
 
         assert stdout == ""
         assert _OLD_CONTENT not in new_content
-        assert "\n".join([prefix, _START_MARK, "# environment"]).lower() in new_content
+        assert "\n".join([prefix, _START_MARK, SETTINGS_MARKDOWN_FIRST_LINE]).lower() in new_content
         assert "\n".join(["**required**", _END_MARK, suffix]).lower() in new_content
 
     @staticmethod
