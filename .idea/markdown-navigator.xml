@@ -15,6 +15,7 @@
         <option name="STRIKETHROUGH" value="true" />
         <option name="TABLES" value="true" />
         <option name="TASKLISTITEMS" value="true" />
+        <option name="TOC" value="true" />
       </PegdownExtensions>
       <ParserOptions>
         <option name="COMMONMARK_LISTS" value="true" />

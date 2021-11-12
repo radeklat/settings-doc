@@ -5,7 +5,7 @@
     Each `field` in `fields` is instance of `ModelField`.
     Extra parameters unknown to pydantic are stored in `field.field_info.extra`.
 
-    To see all possible values, run this generator with `--format yaml`.
+    To see all possible values, run this generator with `--format debug`.
 #}
 {% for field in fields %}
     {% if field.field_info.description %}

@@ -12,15 +12,232 @@
     <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/settings-doc">
 </p>
 
+The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic.BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings).
+
+It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) templating engine and [Typer](https://typer.tiangolo.com/) framework. If you don't like the built-in templates, you can easily modify them or write completely custom ones. All attributes of the [`BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings) models are exposed to the templates.
+
+<!--
+    How to generate TOC from PyCharm:
+    https://github.com/vsch/idea-multimarkdown/wiki/Table-of-Contents-Extension
+-->
+[TOC levels=1,2 markdown formatted bullet hierarchy]: # "Table of content"
+
+# Table of content
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Minimal documentation](#minimal-documentation)
+  - [Adding more information](#adding-more-information)
+  - [Updating existing documentation](#updating-existing-documentation)
+  - [Customising templates](#customising-templates)
+  - [Custom values in the templates](#custom-values-in-the-templates)
+- [Features overview](#features-overview)
+  - [Markdown](#markdown)
+  - [.env](#env)
+
 # Installation
 
 ```
 pip install settings-doc
 ```
 
-# TODOs
+# Usage
 
-- Improve this README
-  - Add usage instructions
-  - Add features overview
-- Add an update flag to update existing documents between two marks
+See `settings-doc --help` for all options.
+
+## Minimal example
+
+Let's assume the following [`BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings) in `src/settings.py` of a project:
+
+```python
+from pydantic import BaseSettings
+
+class AppSettings(BaseSettings):
+    logging_level: str
+```
+
+You can generate a Markdown documentation into stdout with:
+
+```shell script
+settings-doc generate --class src.settings.AppSettings --output-format markdown
+```
+
+Which will output:
+
+```markdown
+# Environment variables
+
+## `LOGGING_LEVEL`
+
+**Required**
+```
+
+Similarly, you can generate a `.env` file for local development with:
+
+```shell script
+settings-doc generate --class src.settings.AppSettings --output-format dotenv
+```
+
+Which will output:
+
+```dotenv
+LOGGING_LEVEL=
+
+```
+
+## Adding more information
+
+You can add any extra field parameters to the settings. By default, `settings-doc` will utilise the default value, whether the parameter is required or optional, description, example value and list of possible values:
+
+```python
+from pydantic import BaseSettings, Field
+
+class AppSettings(BaseSettings):
+    logging_level: str = Field(
+        "WARNING",
+        description="Log level.",
+        example="`WARNING`",
+        possible_values=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+    )
+```
+
+Which will generate the following markdown:
+
+```markdown
+# Environment variables
+
+## `LOGGING_LEVEL`
+
+*Optional*, default value: `WARNING`
+
+Log level.
+
+### Examples
+
+`WARNING`
+
+### Possible values
+
+`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
+```
+
+or `.env` file:
+
+```dotenv
+# Log level.
+# Possible values:
+#   `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
+# LOGGING_LEVEL=WARNING
+```
+
+## Updating existing documentation
+
+You may want to generate the documentation into and existing document. To fit with the heading structure, you can adjust the heading levels with `--heading-offset`. Additionally, you can specify the location where to generate the documentation with two marks set by `--between <START MARK> <END MARK>`.
+
+Let's assume your `README.md` looks like this:
+
+```markdown
+# My app
+
+This app is distributes as a docker image and configurable via environment variables. See the list below:
+
+<!-- generated env. vars. start -->
+<!-- generated env. vars. end -->
+```
+
+When you run:
+
+```shell script
+settings-doc generate \
+  --class src.settings.AppSettings \
+  --output-format markdown \ 
+  --update README.md \
+  --between "<!-- generated env. vars. start -->" "<!-- generated env. vars. end -->" \
+  --heading-offset 1
+```
+
+the updated `README.md` will get only the specified location overwritten:
+
+```markdown
+# My app
+
+This app is distributes as a docker image and configurable via environment variables. See the list below:
+
+<!-- generated env. vars. start -->
+## Environment variables
+
+### `LOGGING_LEVEL`
+
+*Optional*, default value: `WARNING`
+
+Log level.
+
+#### Examples
+
+`WARNING`
+
+#### Possible values
+
+`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`
+<!-- generated env. vars. end -->
+```
+
+## Custom templates
+
+`settings-doc` comes with a few built-in templates. You can override them or write completely new ones.
+
+To just modify the existing ones:
+1. Copy the built-in templates into a new directory:
+   ```shell script
+   mkdir custom_templates
+   settings-doc templates --copy-to custom_templates
+   ```
+2. Modify the template copies in `custom_templates` to suit your needs. You can keep only the modified ones as `settings-doc` always falls back to the built-in ones.
+3. Use them when generating the documentation:
+   ```shell script
+   settings-doc generate \
+     --class src.settings.AppSettings \
+     --output-format dotenv \
+     --templates custom_templates
+   ```
+
+To create new ones, create a folder and then a Jinja2 template with a file names `<OUTPUT_FORMAT>.jinja`. Then simply reference both in the command line options:
+
+```shell script
+mkdir custom_templates
+
+echo "{{ field.title }}" > custom_templates/only_titles.jinja
+
+settings-doc generate \
+ --class src.settings.AppSettings \
+ --output-format only_titles \
+ --templates custom_templates
+```
+
+## Custom settings attributes in templates
+
+By default, there are several variables available in all templates:
+- `heading_offset`, which is the value of the `--heading-offset` option, defaults to `0`.
+- `fields`, which is the value of `BaseSettings.__fields__.values()`. In other words, a list of individual settings fields. Each field is then an instance of [`ModelField`](https://github.com/samuelcolvin/pydantic/blob/master/pydantic/fields.py).
+
+Extra parameters unknown to pydantic are stored in `field.field_info.extra`. Examples of such parameters are `example` and `possible_values`.
+
+Even the bare `ModelField` without any extra parameters has a large number of attributes. To see them all, run this `settings-doc` with `--format debug`.
+
+# Features overview
+
+- Output into several formats with `--output-format`: markdown, dotenv
+- Writes into stdout by default, which allows piping to other tools for further processing.
+- Able to update specified file with `--update`, optionally between two given string marks with `--between`. Useful for keeping documentation up to date.
+- Additional templates and default template overrides via `--templates`.
+
+## Markdown
+
+- Allows setting a `--heading-offset` to fit into existing documentation.
+- Intelligently formats example values as:
+  - Single line if all values fit withing 75 characters.
+  - List of values if all values won't fit on a single line.
+  - List of `<VALUE>: <DESCRIPTION>` if example values are tuples of 1-2 items.
+
+## .env
+
+- Leaves environment variables commented if they have a default value as the app doesn't require them.

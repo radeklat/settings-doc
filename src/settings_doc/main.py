@@ -72,7 +72,8 @@ def generate(
         "-c",
         callback=class_path_callback,
         help="Period-separated import path to a subclass of `pydantic.BaseSettings`. "
-        "Must be importable from current working directory.",
+        "Must be importable from current working directory. Setting PYTHONPATH "
+        "appropriately may be required.",
     ),
     output_format: OutputFormat = Option(..., "--output-format", "-f", help="Output format."),
     heading_offset: int = Option(0, min=0, help="How nested should be the top level heading generated."),
