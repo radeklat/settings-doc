@@ -133,15 +133,17 @@ def generate(
 
     with open(update_file, "w", encoding="utf-8") as file:
         if all(update_between):
-            pattern = f"({re.escape(update_between[0])}\n?).*(\n?{re.escape(update_between[1])})"
-            new_content = re.sub(pattern, f"\\1{render}\\2", content, count=1, flags=re.DOTALL)
-            if new_content == content:
+            pattern = re.compile(f"({re.escape(update_between[0])}\n?).*(\n?{re.escape(update_between[1])})", re.DOTALL)
+
+            if pattern.search(content) is None:
                 secho(
                     f"Boundary marks '{update_between[0]}' and '{update_between[1]}' not found in '{update_file}'. "
                     f"Cannot update the content.",
                     fg=colors.RED,
                 )
                 raise Abort()
+
+            new_content = pattern.sub(f"\\1{render}\\2", content, count=1)
         else:
             new_content = render
 
