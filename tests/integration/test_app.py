@@ -10,6 +10,7 @@ from unittest.mock import patch
 import pytest
 
 from tests.constants import PROJECT_NAME, PROJECT_VERSION
+from tests.fixtures.example_settings import SETTINGS_MARKDOWN_FIRST_LINE
 
 
 def build() -> CompletedProcess:
@@ -62,7 +63,7 @@ class TestApp:
             with patch_pythonpath():
                 os.chdir(Path(__file__).parent.parent.parent)
                 result = run([PROJECT_NAME] + command_line_args, stdout=PIPE, check=True)
-                assert "# environment variables" in result.stdout.decode().lower()
+                assert SETTINGS_MARKDOWN_FIRST_LINE in result.stdout.decode().lower()
 
 
 class TestMain:
