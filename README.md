@@ -26,6 +26,7 @@ It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) temp
 - [Installation](#installation)
 - [Usage](#usage)
   - [Minimal example](#minimal-example)
+  - [Class auto-discovery](#class-auto-discovery)
   - [Adding more information](#adding-more-information)
   - [Updating existing documentation](#updating-existing-documentation)
   - [Custom templates](#custom-templates)
@@ -81,6 +82,16 @@ Which will output:
 LOGGING_LEVEL=
 
 ```
+
+## Class auto-discovery
+
+If you have a module with a single settings class or want to load multiple classes at once as a source, you can also use the `--module` option. The following example works exactly like the one above and will use the `AppSettings` class automatically.
+
+```shell script
+settings-doc generate --module src.settings --output-format dotenv
+```
+
+If multiple classes contain a field with the same name, all instances will appear in the output.
 
 ## Adding more information
 
