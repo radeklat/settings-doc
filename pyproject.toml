@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "settings-doc"
-version = "0.6.0"
+version = "0.6.1"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"
@@ -36,7 +36,6 @@ settings-doc = "settings_doc.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.6.2"
-termcolor = "^1.1.0"
 Jinja2 = "^3.0.2"
 pydantic = "^1.8.2"
 typer = {version = "^0.4.0", extras = ["all"]}
@@ -60,6 +59,7 @@ types-toml = "*"
 click = "^8.0.3"
 types-dataclasses = {version = "*", markers = "python_version < '3.7'"}
 dataclasses = {version = "*", markers = "python_version < '3.7'"}
+termcolor = "^1.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

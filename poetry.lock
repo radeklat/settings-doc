@@ -546,7 +546,7 @@ python-versions = "*"
 name = "termcolor"
 version = "1.1.0"
 description = "ANSII Color formatting for output in terminal."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -669,7 +669,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.2"
-content-hash = "a2c6b98d88b5ff43d48d32cd2f83d0e462b0e6408fe38fbf7f7ea0d5113bac8e"
+content-hash = "373c4b8dd089e38c098a1f1325e5d1662d11d07463d45da8c970d16fcd7875d0"
 
 [metadata.files]
 astroid = [
