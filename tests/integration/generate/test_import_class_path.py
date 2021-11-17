@@ -1,8 +1,8 @@
 import pytest
 from click import BadParameter
-from pydantic import BaseSettings
 
 from settings_doc.importing import import_class_path
+from tests.fixtures.example_settings import EmptySettings
 
 _PREFIX = "Cannot read the settings class: "
 
@@ -10,8 +10,8 @@ _PREFIX = "Cannot read the settings class: "
 class TestImportClassPath:
     @staticmethod
     def should_return_base_settings_class_when_importable():
-        cls = import_class_path("tests.fixtures.example_settings.EmptySettings")
-        assert issubclass(cls, BaseSettings)
+        classes = import_class_path(("tests.fixtures.example_settings.EmptySettings",))
+        assert classes == {EmptySettings}
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -46,4 +46,4 @@ class TestImportClassPath:
     )
     def should_fail_with_bad_parameter_when(class_path, error_message):
         with pytest.raises(BadParameter, match=error_message):
-            import_class_path(class_path)
+            import_class_path((class_path,))

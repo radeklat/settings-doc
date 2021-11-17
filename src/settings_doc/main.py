@@ -2,15 +2,18 @@ import re
 import shutil
 from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
+from itertools import chain
 from os import listdir
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Set, Tuple, Type
 
 from click import Abort, secho
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from pydantic import BaseSettings
+from pydantic.fields import ModelField
 from typer import Option, Typer, colors
 
-from settings_doc.importing import class_path_callback, import_class_path, import_module_path, module_path_callback
+from settings_doc import importing
 
 app = Typer()
 
@@ -43,18 +46,18 @@ def generate(
         [],
         "--module",
         "-m",
-        callback=module_path_callback,
+        callback=importing.module_path_callback,
         help="Period-separated import path to a module that contains one or more subclasses"
         "of `pydantic.BaseSettings`. All such sub-classes will be used to generate the output. "
         "If that is undesirable, use the `--class` option to specify classes manually. "
         "Must be importable from current working directory. Setting PYTHONPATH appropriately "
         "may be required.",
     ),
-    class_path: str = Option(
-        ...,
+    class_path: List[str] = Option(
+        [],
         "--class",
         "-c",
-        callback=class_path_callback,
+        callback=importing.class_path_callback,
         help="Period-separated import path to a subclass of `pydantic.BaseSettings`. "
         "Must be importable from current working directory. Use `--module` instead to auto-discover "
         "all such subclasses in a module. Setting PYTHONPATH appropriately may be required.",
@@ -94,9 +97,11 @@ def generate(
     ),
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""
-    settings = import_class_path(class_path)
-    settings2 = import_module_path(module_path)
-    render_kwargs = {"heading_offset": heading_offset, "fields": settings.__fields__.values()}
+    settings: Set[Type[BaseSettings]] = importing.import_class_path(tuple(class_path)).union(
+        importing.import_module_path(tuple(module_path))
+    )
+    fields: List[ModelField] = list(chain.from_iterable(cls.__fields__.values() for cls in settings))
+    render_kwargs = {"heading_offset": heading_offset, "fields": fields}
 
     env = Environment(
         loader=FileSystemLoader(templates + [TEMPLATES_FOLDER]),

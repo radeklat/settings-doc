@@ -50,21 +50,26 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]
 
 
 @lru_cache
-def import_class_path(class_path: str) -> Type[BaseSettings]:
-    module, class_name = class_path.rsplit(".", maxsplit=1)
-    try:
-        settings = getattr(importlib.import_module(module), class_name)
-    except (AttributeError, ModuleNotFoundError, TypeError) as exc:
-        cause = str(exc)
-        if isinstance(exc, TypeError) and "relative import" in cause:
-            cause = _RELATIVE_IMPORT_ERROR_MSG
-        raise BadParameter(f"Cannot read the settings class: {cause}") from exc
+def import_class_path(class_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]:
+    settings: Set[Type[BaseSettings]] = set()
 
-    if not isclass(settings):
-        raise BadParameter(f"Target '{class_name}' in module '{module}' is not a class.")
+    for class_path in class_paths:
+        module, class_name = class_path.rsplit(".", maxsplit=1)
+        try:
+            new_class = getattr(importlib.import_module(module), class_name)
+        except (AttributeError, ModuleNotFoundError, TypeError) as exc:
+            cause = str(exc)
+            if isinstance(exc, TypeError) and "relative import" in cause:
+                cause = _RELATIVE_IMPORT_ERROR_MSG
+            raise BadParameter(f"Cannot read the settings class: {cause}") from exc
 
-    if not issubclass(settings, BaseSettings):
-        raise BadParameter(f"Target class must be a subclass of BaseSettings but '{settings.__name__}' found.")
+        if not isclass(new_class):
+            raise BadParameter(f"Target '{class_name}' in module '{module}' is not a class.")
+
+        if not issubclass(new_class, BaseSettings):
+            raise BadParameter(f"Target class must be a subclass of BaseSettings but '{new_class.__name__}' found.")
+
+        settings.add(new_class)
 
     return settings
 
@@ -74,6 +79,6 @@ def module_path_callback(value: List[str]) -> List[str]:
     return value
 
 
-def class_path_callback(value: str) -> str:
-    import_class_path(value)
+def class_path_callback(value: List[str]) -> List[str]:
+    import_class_path(tuple(value))
     return value
