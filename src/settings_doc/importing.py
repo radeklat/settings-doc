@@ -43,7 +43,7 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]
         raise BadParameter(
             _MODULE_ERROR_MSG.format(module_path=module_paths[0])
             if len(module_paths) == 1
-            else f"No `pydantic.BaseSettings` subclasses found in any of the modules."
+            else "No `pydantic.BaseSettings` subclasses found in any of the modules."
         )
 
     return settings

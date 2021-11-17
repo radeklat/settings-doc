@@ -47,12 +47,12 @@ class TestImportModulePath:
         [
             pytest.param(
                 ("tests.fixtures.module_without_settings",),
-                f"No `pydantic.BaseSettings` subclasses found in module 'tests.fixtures.module_without_settings'.",
+                "No `pydantic.BaseSettings` subclasses found in module 'tests.fixtures.module_without_settings'.",
                 id="no BaseSettings subclass is found in the module",
             ),
             pytest.param(
                 ("tests.fixtures.module_without_settings", "tests.fixtures.module_without_settings_2"),
-                f"No `pydantic.BaseSettings` subclasses found in any of the modules.",
+                "No `pydantic.BaseSettings` subclasses found in any of the modules.",
                 id="no BaseSettings subclass is found in any of the modules",
             ),
             pytest.param(

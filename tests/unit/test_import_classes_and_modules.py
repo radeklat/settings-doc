@@ -1,8 +1,7 @@
-from typing import List, Set
+from typing import Set, Type
 
 import pytest
-from _pytest.capture import CaptureFixture
-from click import Abort
+from pydantic import BaseSettings
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
@@ -28,7 +27,10 @@ class TestImportClassesAndModules:
         ],
     )
     def should_generate_output_from_all_classes(
-        class_settings: Set[str], module_settings: Set[str], runner: CliRunner, mocker: MockerFixture
+        class_settings: Set[Type[BaseSettings]],
+        module_settings: Set[Type[BaseSettings]],
+        runner: CliRunner,
+        mocker: MockerFixture,
     ):
         all_classes = class_settings.union(module_settings)
         mocker.patch("settings_doc.importing.import_class_path", return_value=class_settings)

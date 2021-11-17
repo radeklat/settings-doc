@@ -102,7 +102,7 @@ def generate(
     )
 
     if not settings:
-        secho(f"No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)
+        secho("No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)
         raise Abort()
 
     fields: List[ModelField] = list(chain.from_iterable(cls.__fields__.values() for cls in settings))
