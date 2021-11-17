@@ -2,14 +2,28 @@
 <h3 align="center">A command line tool for generating Markdown documentation and .env files from <a href="https://pydantic-docs.helpmanual.io/usage/settings">pydantic.BaseSettings</a>.</h3>
 
 <p align="center">
-    <img alt="CircleCI" src="https://img.shields.io/circleci/build/github/radeklat/settings-doc">
-    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/radeklat/settings-doc">
-    <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/radeklat/settings-doc">
+    <a href="https://app.circleci.com/pipelines/github/radeklat/settings-doc?branch=main">
+        <img alt="CircleCI" src="https://img.shields.io/circleci/build/github/radeklat/settings-doc">
+    </a>
+    <a href="https://app.codecov.io/gh/radeklat/settings-doc/">
+        <img alt="Codecov" src="https://img.shields.io/codecov/c/github/radeklat/settings-doc">
+    </a>
+    <a href="https://github.com/radeklat/settings-doc/tags">
+        <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/radeklat/settings-doc">
+    </a>
     <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2021">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/radeklat/settings-doc">
-    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/settings-doc">
-    <img alt="PyPI - License" src="https://img.shields.io/pypi/l/settings-doc">
-    <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/settings-doc">
+    <a href="https://github.com/radeklat/settings-doc/commits/main">
+        <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/radeklat/settings-doc">
+    </a>
+    <a href="https://pypistats.org/packages/settings-doc">
+        <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/settings-doc">
+    </a>
+    <a href="https://github.com/radeklat/settings-doc/blob/main/LICENSE">
+        <img alt="PyPI - License" src="https://img.shields.io/pypi/l/settings-doc">
+    </a>
+    <a href="https://www.python.org/doc/versions/">
+        <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/settings-doc">
+    </a>
 </p>
 
 The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic.BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings).
