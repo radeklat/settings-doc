@@ -11,7 +11,7 @@ _MODULE_ERROR_MSG = "No `pydantic.BaseSettings` subclasses found in module '{mod
 _RELATIVE_IMPORT_ERROR_MSG = "Relative imports are not supported."
 
 
-@lru_cache
+@lru_cache()
 def import_module_path(module_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]:
     if not module_paths:
         return set()
@@ -49,7 +49,7 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]
     return settings
 
 
-@lru_cache
+@lru_cache()
 def import_class_path(class_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]:
     settings: Set[Type[BaseSettings]] = set()
 
