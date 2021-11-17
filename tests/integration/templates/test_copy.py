@@ -2,12 +2,14 @@ import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import pytest
 from typer.testing import CliRunner
 
 from settings_doc.main import TEMPLATES_FOLDER
 from tests.helpers import copy_templates
 
 
+@pytest.mark.slow
 class TestTemplatesCopy:
     @staticmethod
     def should_copy_templates_into_selected_folder(runner: CliRunner):
