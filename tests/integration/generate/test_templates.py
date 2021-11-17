@@ -6,7 +6,7 @@ from typing import Dict, List
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
-from tests.fixtures.example_settings import EmptySettings
+from tests.fixtures.valid_settings import EmptySettings
 from tests.helpers import copy_templates, run_app_with_settings
 
 

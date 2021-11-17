@@ -11,15 +11,11 @@ class EmptySettings(BaseSettings):
 class FullSettings(BaseSettings):
     logging_level: str = Field(
         "some_value",
-        description="use it like this",
+        description="use FullSettings like this",
         example="this is an example use",
         possible_values=["aaa", "bbb"],
     )
 
 
 class RequiredSettings(BaseSettings):
-    logging_level: str = Field(..., description="use it like this")
-
-
-class PossibleValuesNotIterableSettings(BaseSettings):
-    logging_level: str = Field(..., possible_values=123456)
+    logging_level: str = Field(..., description="RequiredSettings")

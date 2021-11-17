@@ -1,25 +1,39 @@
+from typing import List, Set, Type
+
 import pytest
 from click import BadParameter
+from pydantic import BaseSettings
 
 from settings_doc.importing import import_class_path
-from tests.fixtures.example_settings import EmptySettings
+from tests.fixtures.valid_settings import EmptySettings, FullSettings
 
 _PREFIX = "Cannot read the settings class: "
 
 
 class TestImportClassPath:
     @staticmethod
-    def should_return_base_settings_class_when_importable():
-        classes = import_class_path(("tests.fixtures.example_settings.EmptySettings",))
-        assert classes == {EmptySettings}
+    @pytest.mark.parametrize(
+        "class_paths, expected_classes",
+        [
+            pytest.param(["EmptySettings"], {EmptySettings}, id="single class when single option is given"),
+            pytest.param(
+                ["EmptySettings", "FullSettings"],
+                {EmptySettings, FullSettings},
+                id="multiple classes when multiple options are given",
+            ),
+        ],
+    )
+    def should_return(class_paths: List[str], expected_classes: Set[Type[BaseSettings]]):
+        classes = import_class_path(tuple(f"tests.fixtures.valid_settings.{class_path}" for class_path in class_paths))
+        assert classes == expected_classes
 
     @staticmethod
     @pytest.mark.parametrize(
         "class_path, error_message",
         [
             pytest.param(
-                "tests.fixtures.example_settings.NotHere",
-                f"{_PREFIX}module 'tests.fixtures.example_settings' has no attribute 'NotHere'",
+                "tests.fixtures.module_without_settings.NotHere",
+                f"{_PREFIX}module 'tests.fixtures.module_without_settings' has no attribute 'NotHere'",
                 id="class with given name is not in the module",
             ),
             pytest.param(

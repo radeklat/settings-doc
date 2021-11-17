@@ -10,7 +10,7 @@ from unittest.mock import patch
 import pytest
 
 from tests.constants import PROJECT_NAME, PROJECT_VERSION
-from tests.fixtures.example_settings import SETTINGS_MARKDOWN_FIRST_LINE
+from tests.fixtures.valid_settings import SETTINGS_MARKDOWN_FIRST_LINE
 
 
 def build() -> CompletedProcess:
@@ -44,9 +44,10 @@ def patch_pythonpath() -> Iterator[None]:
 
 @pytest.fixture()
 def command_line_args() -> List[str]:
-    return ["generate", "--class", "tests.fixtures.example_settings.EmptySettings", "--output-format", "markdown"]
+    return ["generate", "--class", "tests.fixtures.valid_settings.EmptySettings", "--output-format", "markdown"]
 
 
+@pytest.mark.slow
 class TestApp:
     @staticmethod
     def should_be_possible_to_build():
@@ -66,6 +67,7 @@ class TestApp:
                 assert SETTINGS_MARKDOWN_FIRST_LINE in result.stdout.decode().lower()
 
 
+@pytest.mark.slow
 class TestMain:
     @staticmethod
     def should_be_executable(command_line_args: List[str]):

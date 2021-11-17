@@ -100,6 +100,11 @@ def generate(
     settings: Set[Type[BaseSettings]] = importing.import_class_path(tuple(class_path)).union(
         importing.import_module_path(tuple(module_path))
     )
+
+    if not settings:
+        secho(f"No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)
+        raise Abort()
+
     fields: List[ModelField] = list(chain.from_iterable(cls.__fields__.values() for cls in settings))
     render_kwargs = {"heading_offset": heading_offset, "fields": fields}
 
@@ -130,6 +135,7 @@ def generate(
                     f"Boundary marks '{update_between[0]}' and '{update_between[1]}' not found in '{update_file}'. "
                     f"Cannot update the content.",
                     fg=colors.RED,
+                    err=True,
                 )
                 raise Abort()
 

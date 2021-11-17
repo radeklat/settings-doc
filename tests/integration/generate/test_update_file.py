@@ -6,7 +6,7 @@ import pytest
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
-from tests.fixtures.example_settings import SETTINGS_MARKDOWN_FIRST_LINE, EmptySettings
+from tests.fixtures.valid_settings import SETTINGS_MARKDOWN_FIRST_LINE, EmptySettings
 from tests.helpers import run_app_with_settings
 
 _OLD_CONTENT = "this is an old content"
