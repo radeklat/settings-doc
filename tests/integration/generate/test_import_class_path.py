@@ -2,7 +2,7 @@ import pytest
 from click import BadParameter
 from pydantic import BaseSettings
 
-from settings_doc.main import import_class_path
+from settings_doc.importing import import_class_path
 
 _PREFIX = "Cannot read the settings class: "
 

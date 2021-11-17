@@ -1,18 +1,16 @@
-import importlib
 import re
 import shutil
 from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
-from functools import lru_cache
-from inspect import isclass
 from os import listdir
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, Type
+from typing import Any, List, Optional, Tuple
 
-from click import Abort, BadParameter, secho
+from click import Abort, secho
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from pydantic import BaseSettings
 from typer import Option, Typer, colors
+
+from settings_doc.importing import class_path_callback, import_class_path, import_module_path, module_path_callback
 
 app = Typer()
 
@@ -31,31 +29,6 @@ class OutputFormat(Enum):
     DEBUG = auto()
 
 
-@lru_cache(maxsize=None)  # Python 3.9+: use functools.cache
-def import_class_path(class_path: str) -> Type[BaseSettings]:
-    module, class_name = class_path.rsplit(".", maxsplit=1)
-    try:
-        settings = getattr(importlib.import_module(module), class_name)
-    except (AttributeError, ModuleNotFoundError, TypeError) as exc:
-        cause = str(exc)
-        if isinstance(exc, TypeError) and "relative import" in cause:
-            cause = "Relative imports are not supported."
-        raise BadParameter(f"Cannot read the settings class: {cause}") from exc
-
-    if not isclass(settings):
-        raise BadParameter(f"Target '{class_name}' in module '{module}' is not a class.")
-
-    if not issubclass(settings, BaseSettings):
-        raise BadParameter(f"Target class must be a subclass of BaseSettings but '{settings.__name__}' found.")
-
-    return settings
-
-
-def class_path_callback(value: str) -> str:
-    import_class_path(value)
-    return value
-
-
 def is_values_with_descriptions(value: Any) -> bool:
     if not isinstance(value, IterableCollection):
         secho(f"`possible_values` must be iterable but `{value}` used.", fg=colors.RED)
@@ -66,14 +39,25 @@ def is_values_with_descriptions(value: Any) -> bool:
 
 @app.command()
 def generate(
+    module_path: List[str] = Option(
+        [],
+        "--module",
+        "-m",
+        callback=module_path_callback,
+        help="Period-separated import path to a module that contains one or more subclasses"
+        "of `pydantic.BaseSettings`. All such sub-classes will be used to generate the output. "
+        "If that is undesirable, use the `--class` option to specify classes manually. "
+        "Must be importable from current working directory. Setting PYTHONPATH appropriately "
+        "may be required.",
+    ),
     class_path: str = Option(
         ...,
         "--class",
         "-c",
         callback=class_path_callback,
         help="Period-separated import path to a subclass of `pydantic.BaseSettings`. "
-        "Must be importable from current working directory. Setting PYTHONPATH "
-        "appropriately may be required.",
+        "Must be importable from current working directory. Use `--module` instead to auto-discover "
+        "all such subclasses in a module. Setting PYTHONPATH appropriately may be required.",
     ),
     output_format: OutputFormat = Option(..., "--output-format", "-f", help="Output format."),
     heading_offset: int = Option(0, min=0, help="How nested should be the top level heading generated."),
@@ -111,6 +95,7 @@ def generate(
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""
     settings = import_class_path(class_path)
+    settings2 = import_module_path(module_path)
     render_kwargs = {"heading_offset": heading_offset, "fields": settings.__fields__.values()}
 
     env = Environment(
