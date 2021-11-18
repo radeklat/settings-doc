@@ -16,9 +16,6 @@ parameters:
   cache_version:
     type: string
     default: "2"
-  dockerhub_username:
-    type: string
-    default: "radeklat"
   git_trunk_branch:
     type: string
     default: "main"
