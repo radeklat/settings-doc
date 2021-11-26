@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "settings-doc"
-version = "0.6.1"
+version = "0.7.0"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"
@@ -21,7 +21,6 @@ classifiers = [
     "Topic :: Utilities",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -35,31 +34,15 @@ homepage = "https://github.com/radeklat/settings-doc"
 settings-doc = "settings_doc.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
+python = "^3.7.0"
 Jinja2 = "^3.0.2"
 pydantic = "^1.8.2"
 typer = {version = "^0.4.0", extras = ["all"]}
 
 [tool.poetry.dev-dependencies]
-black = "^21.9b0"
-isort = "^5.9.3"
-coverage = "^6.0.2"
-pylint = "^2.11.1"
-mypy = "^0.910"
-pytest = "^6.2.5"
-pytest-cov = "^3.0.0"
-pre-commit = "^2.15.0"
-pycodestyle = "^2.8.0"
-pydocstyle = "^6.1.1"
-pytest-dotenv = "^0.5.2"
-invoke = "^1.6.0"
-types-termcolor = "*"
-pytest-mock = "^3.6.1"
-types-toml = "*"
 click = "^8.0.3"
-types-dataclasses = {version = "*", markers = "python_version < '3.7'"}
-dataclasses = {version = "*", markers = "python_version < '3.7'"}
-termcolor = "^1.1.0"
+types-toml = "*"
+delfino = {extras = ["all"], version = "^0.7.1"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -140,3 +123,14 @@ add-ignore = [
     "D401",  # "First line should be in imperative mood"
     "D413",  # "Missing blank line after last section"
 ]
+
+[tool.delfino]
+reports_directory = "reports"
+sources_directory = "src"
+tests_directory = "tests"
+
+# Directories under `tests_directory` that contain specific test type.
+test_types = ["unit", "integration"]
+
+[tool.delfino.plugins]
+custom_field = "hello"

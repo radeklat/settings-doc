@@ -12,13 +12,16 @@ parameters:
     default: ~/settings-doc
   python_version:
     type: string
-    default: "3.6"
+    default: "3.7"
   cache_version:
     type: string
-    default: "2"
+    default: "3"
   git_trunk_branch:
     type: string
     default: "main"
+  command_prefix:
+    type: string
+    default: "poetry run delfino"
 
 jobs: # A basic unit of work in a run
   test:
@@ -40,16 +43,16 @@ jobs: # A basic unit of work in a run
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< parameters.python_version >>-{{ checksum "poetry.lock" }}
       - run:
           name: Install dev libraries
-          command: pip install --upgrade pip poetry && poetry install --no-ansi
+          command: pip install --upgrade pip poetry && poetry install --no-ansi --no-root
       - run:
           name: Format check
-          command: poetry run inv format --check
+          command: << pipeline.parameters.command_prefix >> format --check
       - run:
           name: Type check
-          command: poetry run inv typecheck
+          command: << pipeline.parameters.command_prefix >> typecheck
       - run:
           name: Linters
-          command: poetry run inv lint
+          command: << pipeline.parameters.command_prefix >> lint
       - save_cache:
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< parameters.python_version >>-{{ checksum "poetry.lock" }}
           paths:
@@ -58,13 +61,13 @@ jobs: # A basic unit of work in a run
             - "/usr/local/lib/python<< parameters.python_version >>/site-packages"
       - run:
           name: Unit tests
-          command: poetry run inv test-unit
+          command: << pipeline.parameters.command_prefix >> test-unit
       - run:
           name: Integration tests
-          command: poetry run inv test-integration
+          command: << pipeline.parameters.command_prefix >> test-integration
       - run:
           name: Build coverage report
-          command: poetry run inv coverage-report
+          command: << pipeline.parameters.command_prefix >> coverage-report
       - run:
           name: Upload coverage reports to Codecov
           command: |
@@ -85,7 +88,7 @@ jobs: # A basic unit of work in a run
     steps:
       - checkout
       - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python<< pipeline.parameters.python_version >>/site-packages
       - restore_cache:
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
       - run:
@@ -97,7 +100,7 @@ jobs: # A basic unit of work in a run
           paths:
             - .
 
-  deploy_library:
+  publish:
     working_directory: << pipeline.parameters.working_directory >>
     docker: # run the steps with Docker
       - image: circleci/python:<< pipeline.parameters.python_version >>
@@ -131,16 +134,16 @@ jobs: # A basic unit of work in a run
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
       - gh/setup
       - run:
-          name: Tag release
+          name: Check if current version has been released
           command: |
-            git fetch --tags origin
             VERSION=$(poetry version -s)
-            if [[ $(git tag | grep -q $VERSION; echo $?) -ne 0 ]]; then
-              gh release create $VERSION -F CHANGELOG.md
-            else
+            if [[ $(gh release view $VERSION >/dev/null 2>&1; echo $?) -eq 0 ]]; then
               echo "Tag '$VERSION' already exists. Skipping."
+              circleci-agent step halt
             fi
-
+      - run:
+          name: Create a release
+          command: gh release create $(poetry version -s) -F CHANGELOG.md
 
 workflows:
   version: 2
@@ -148,16 +151,16 @@ workflows:
     jobs:
       - test:
           name: Python << matrix.python_version >> tests
-          context: settings-doc
+          context: << pipeline.parameters.project_name >>
           matrix:
             parameters:
-              python_version: [ "3.6", "3.7", "3.8", "3.9", "3.10" ]
+              python_version: [ "3.7", "3.8", "3.9", "3.10" ]
       - build:
           name: Build
           requires:
             - test
-      - deploy_library:
-          name: Deploy to Pypi
+      - publish:
+          name: Publish to Pypi
           context: pypi_upload
           requires:
             - Build
@@ -168,7 +171,7 @@ workflows:
           context:
             - github
           requires:
-            - Deploy to Pypi
+            - Publish to Pypi
           filters:
             branches:
               only: << pipeline.parameters.git_trunk_branch >>
