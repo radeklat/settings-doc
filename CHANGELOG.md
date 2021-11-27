@@ -14,6 +14,13 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [0.7.0] - 2021-11-26
+
+### Removed
+
+- Support for Python 3.6.
+- `tasks` folder, in favour of `delfino`.
+
 ## [0.6.1] - 2021-11-17
 
 ### Fixed
@@ -79,7 +86,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.6.1...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/radeklat/settings-doc/compare/0.6.1...0.7.0
 [0.6.1]: https://github.com/radeklat/settings-doc/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/radeklat/settings-doc/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/radeklat/settings-doc/compare/0.5.0...0.5.1
