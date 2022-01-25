@@ -11,7 +11,7 @@
     <a href="https://github.com/radeklat/settings-doc/tags">
         <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/radeklat/settings-doc">
     </a>
-    <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2021">
+    <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2022">
     <a href="https://github.com/radeklat/settings-doc/commits/main">
         <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/radeklat/settings-doc">
     </a>
@@ -43,8 +43,10 @@ It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) temp
   - [Class auto-discovery](#class-auto-discovery)
   - [Adding more information](#adding-more-information)
   - [Updating existing documentation](#updating-existing-documentation)
+- [Advanced usage](#advanced-usage)
   - [Custom templates](#custom-templates)
   - [Custom settings attributes in templates](#custom-settings-attributes-in-templates)
+  - [Accessing settings classes in templates](#accessing-settings-classes-in-templates)
 - [Features overview](#features-overview)
   - [Markdown](#markdown)
   - [.env](#env)
@@ -203,6 +205,8 @@ Log level.
 <!-- generated env. vars. end -->
 ```
 
+# Advanced usage
+
 ## Custom templates
 
 `settings-doc` comes with a few built-in templates. You can override them or write completely new ones.
@@ -244,6 +248,20 @@ By default, there are several variables available in all templates:
 Extra parameters unknown to pydantic are stored in `field.field_info.extra`. Examples of such parameters are `example` and `possible_values`.
 
 Even the bare `ModelField` without any extra parameters has a large number of attributes. To see them all, run this `settings-doc` with `--format debug`.
+
+## Accessing settings classes in templates
+
+Built-in templates are intended for most common use with a single `BaseSettings` sub-class. However, settings-doc can load multiple ones as well. By default, all `ModelField`s from all loaded classes are merged together. While the order is retained, the information about original classes is not.
+
+To access information from the `BaseSettings` classes, use the `classes` variable in the templates:
+
+```jinja2
+{% for cls, fields in classes.items() %}
+# {{ cls.__name__ }}
+{% endfor %}
+```
+
+For convenience, classes is a dictionary, where keys are the `BaseSettings` sub-classes and values are lists of extracted `ModelField`s of that class. This can be used for example to split individual classes into sections.
 
 # Features overview
 
