@@ -106,7 +106,8 @@ def generate(
         raise Abort()
 
     fields: List[ModelField] = list(chain.from_iterable(cls.__fields__.values() for cls in settings))
-    render_kwargs = {"heading_offset": heading_offset, "fields": fields}
+    classes: List[Type[BaseSettings]] = list(settings)
+    render_kwargs = {"heading_offset": heading_offset, "fields": fields, "classes": classes}
 
     env = Environment(
         loader=FileSystemLoader(templates + [TEMPLATES_FOLDER]),
