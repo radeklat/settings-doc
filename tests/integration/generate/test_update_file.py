@@ -21,13 +21,13 @@ def _run_app_update(
 ) -> Tuple[str, str]:
     stdout = ""
     try:
-        with NamedTemporaryFile("w", delete=False) as file:
-            file.write(content)
-            filename = file.name
+        with NamedTemporaryFile("w", delete=False) as write_file:
+            write_file.write(content)
+            filename = write_file.name
         for _ in range(repetitions):
             stdout = run_app_with_settings(mocker, runner, EmptySettings, ["--update", filename, *args])
-        with open(filename, "r", encoding="utf-8") as file:
-            new_content = file.read().lower()
+        with open(filename, "r", encoding="utf-8") as read_file:
+            new_content = read_file.read().lower()
         return stdout, new_content
     finally:
         os.remove(filename)

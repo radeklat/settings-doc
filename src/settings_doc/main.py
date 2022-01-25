@@ -5,10 +5,10 @@ from enum import Enum, auto
 from itertools import chain
 from os import listdir
 from pathlib import Path
-from typing import Any, List, Optional, Set, Tuple, Type
+from typing import Any, Dict, List, Optional, Set, Tuple, Type
 
 from click import Abort, secho
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
 from pydantic import BaseSettings
 from pydantic.fields import ModelField
 from typer import Option, Typer, colors
@@ -38,6 +38,10 @@ def is_values_with_descriptions(value: Any) -> bool:
         raise Abort()
 
     return all(list(map(lambda item: isinstance(item, tuple) and 2 >= len(item) >= 1, value)))
+
+
+def get_template(env: Environment, output_format: OutputFormat) -> Template:
+    return env.get_template(f"{output_format.value}.jinja")
 
 
 @app.command()
@@ -106,7 +110,9 @@ def generate(
         raise Abort()
 
     fields: List[ModelField] = list(chain.from_iterable(cls.__fields__.values() for cls in settings))
-    render_kwargs = {"heading_offset": heading_offset, "fields": fields}
+    classes: Dict[Type[BaseSettings], List[ModelField]] = {cls: list(cls.__fields__.values()) for cls in settings}
+
+    render_kwargs = {"heading_offset": heading_offset, "fields": fields, "classes": classes}
 
     env = Environment(
         loader=FileSystemLoader(templates + [TEMPLATES_FOLDER]),
@@ -116,8 +122,7 @@ def generate(
         keep_trailing_newline=True,
     )
     env.globals["is_values_with_descriptions"] = is_values_with_descriptions
-    template = env.get_template(f"{output_format.value}.jinja")
-    render = template.render(**render_kwargs)
+    render = get_template(env, output_format).render(**render_kwargs)
 
     if update_file is None:
         print(render)

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "settings-doc"
-version = "0.7.0"
+version = "0.8.0"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"
@@ -42,7 +42,8 @@ typer = {version = "^0.4.0", extras = ["all"]}
 [tool.poetry.dev-dependencies]
 click = "^8.0.3"
 types-toml = "*"
-delfino = {extras = ["all"], version = "^0.7.1"}
+delfino = {extras = ["verify_all"], version = "^0.11.0"}
+pytest-mock = "^3.6.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -105,8 +106,6 @@ follow_imports = "silent"
 [[tool.mypy.overrides]]
 # Source code dependencies
 module = [
-    "invoke.*",
-    "pipenv.*",
     "influxdb_client.*",
     "paho.*",
 ]
@@ -131,6 +130,3 @@ tests_directory = "tests"
 
 # Directories under `tests_directory` that contain specific test type.
 test_types = ["unit", "integration"]
-
-[tool.delfino.plugins]
-custom_field = "hello"

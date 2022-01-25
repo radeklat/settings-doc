@@ -14,6 +14,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [0.8.0] - 2022-01-25
+
+## Added
+
+- `classes` of type `Dict[Type[BaseSettings], List[ModelField]]` exposed to templates.
+
 ## [0.7.0] - 2021-11-26
 
 ### Removed
@@ -86,7 +92,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/radeklat/settings-doc/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/radeklat/settings-doc/compare/0.6.1...0.7.0
 [0.6.1]: https://github.com/radeklat/settings-doc/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/radeklat/settings-doc/compare/0.5.1...0.6.0
