@@ -111,7 +111,7 @@ If multiple classes contain a field with the same name, all instances will appea
 
 ## Adding more information
 
-You can add any extra field parameters to the settings. By default, `settings-doc` will utilise the default value, whether the parameter is required or optional, description, example value and list of possible values:
+You can add any extra field parameters to the settings. By default, `settings-doc` will utilise the default value, whether the parameter is required or optional, description, example value, and list of possible values:
 
 ```python
 from pydantic import BaseSettings, Field
@@ -156,7 +156,7 @@ You can find even more complex usage of `settings-doc` in [one of my other proje
 
 ## Updating existing documentation
 
-You may want to generate the documentation into and existing document. To fit with the heading structure, you can adjust the heading levels with `--heading-offset`. Additionally, you can specify the location where to generate the documentation with two marks set by `--between <START MARK> <END MARK>`.
+It is possible to generate documentation into an existing document. To fit with the heading structure, you can adjust the heading levels with `--heading-offset`. Additionally, you can specify the location where to generate the documentation with two marks set by `--between <START MARK> <END MARK>`.
 
 Let's assume your `README.md` looks like this:
 
