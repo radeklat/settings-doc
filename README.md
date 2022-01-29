@@ -243,16 +243,13 @@ settings-doc generate \
 ## Custom settings attributes in templates
 
 By default, there are several variables available in all templates:
-- `heading_offset`, which is the value of the `--heading-offset` option, defaults to `0`.
-- `fields`, which is the value of `BaseSettings.__fields__.values()`. In other words, a list of individual settings fields. Each field is then an instance of [`ModelField`](https://github.com/samuelcolvin/pydantic/blob/master/pydantic/fields.py).
+- `heading_offset` - the value of the `--heading-offset` option. Defaults to `0`.
+- `fields` the value of `BaseSettings.__fields__.values()`. In other words, a list of individual settings fields. Each field is then an instance of [`ModelField`](https://github.com/samuelcolvin/pydantic/blob/master/pydantic/fields.py). If multiple classes are used to generate the documentation, `ModelField`s from all classes are collected into `fields`. The information about original classes is not retained.
+- `classes` - a dictionary, where keys are the `BaseSettings` sub-classes and values are lists of extracted `ModelField`s of that class. This can be used for example to split individual classes into sections.
 
 Extra parameters unknown to pydantic are stored in `field.field_info.extra`. Examples of such parameters are `example` and `possible_values`.
 
 Even the bare `ModelField` without any extra parameters has a large number of attributes. To see them all, run this `settings-doc` with `--format debug`.
-
-## Accessing settings classes in templates
-
-Built-in templates are intended for most common use with a single `BaseSettings` sub-class. However, settings-doc can load multiple ones as well. By default, all `ModelField`s from all loaded classes are merged together. While the order is retained, the information about original classes is not.
 
 To access information from the `BaseSettings` classes, use the `classes` variable in the templates:
 
@@ -261,8 +258,6 @@ To access information from the `BaseSettings` classes, use the `classes` variabl
 # {{ cls.__name__ }}
 {% endfor %}
 ```
-
-For convenience, classes is a dictionary, where keys are the `BaseSettings` sub-classes and values are lists of extracted `ModelField`s of that class. This can be used for example to split individual classes into sections.
 
 # Features overview
 
@@ -275,7 +270,7 @@ For convenience, classes is a dictionary, where keys are the `BaseSettings` sub-
 
 - Allows setting a `--heading-offset` to fit into existing documentation.
 - Intelligently formats example values as:
-  - Single line if all values fit withing 75 characters.
+  - Single line if all values fit within 75 characters.
   - List of values if all values won't fit on a single line.
   - List of `<VALUE>: <DESCRIPTION>` if example values are tuples of 1-2 items.
 
