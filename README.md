@@ -163,8 +163,9 @@ Let's assume your `README.md` looks like this:
 ```markdown
 # My app
 
-This app is distributes as a docker image and configurable via environment variables. See the list below:
+This app is distributes as a docker image and configurable via environment variables. See the list below.
 
+# Environment variables
 <!-- generated env. vars. start -->
 <!-- generated env. vars. end -->
 ```
@@ -185,7 +186,7 @@ the updated `README.md` will get only the specified location overwritten:
 ```markdown
 # My app
 
-This app is distributes as a docker image and configurable via environment variables. See the list below:
+This app is distributes as a docker image and configurable via environment variables. See the list below.
 
 # Environment variables
 <!-- generated env. vars. start -->
