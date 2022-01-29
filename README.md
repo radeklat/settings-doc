@@ -46,7 +46,6 @@ It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) temp
 - [Advanced usage](#advanced-usage)
   - [Custom templates](#custom-templates)
   - [Custom settings attributes in templates](#custom-settings-attributes-in-templates)
-  - [Accessing settings classes in templates](#accessing-settings-classes-in-templates)
 - [Features overview](#features-overview)
   - [Markdown](#markdown)
   - [.env](#env)
