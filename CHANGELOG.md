@@ -14,9 +14,15 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [0.8.1] - 2022-02-02
+
+### Fixed
+
+- Missing space before headings in Markdown template.
+
 ## [0.8.0] - 2022-01-25
 
-## Added
+### Added
 
 - `classes` of type `Dict[Type[BaseSettings], List[ModelField]]` exposed to templates.
 
@@ -92,7 +98,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.8.1...HEAD
+[0.8.1]: https://github.com/radeklat/settings-doc/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/radeklat/settings-doc/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/radeklat/settings-doc/compare/0.6.1...0.7.0
 [0.6.1]: https://github.com/radeklat/settings-doc/compare/0.6.0...0.6.1
