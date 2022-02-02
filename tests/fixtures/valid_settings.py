@@ -19,3 +19,8 @@ class FullSettings(BaseSettings):
 
 class RequiredSettings(BaseSettings):
     logging_level: str = Field(..., description="RequiredSettings")
+
+
+class MultipleSettings(BaseSettings):
+    username: str
+    password: str

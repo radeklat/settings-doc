@@ -6,7 +6,13 @@ from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
 from tests.fixtures.invalid_settings import PossibleValuesNotIterableSettings
-from tests.fixtures.valid_settings import SETTINGS_MARKDOWN_FIRST_LINE, EmptySettings, FullSettings, RequiredSettings
+from tests.fixtures.valid_settings import (
+    SETTINGS_MARKDOWN_FIRST_LINE,
+    EmptySettings,
+    FullSettings,
+    MultipleSettings,
+    RequiredSettings,
+)
 from tests.helpers import run_app_with_settings
 
 
@@ -85,3 +91,13 @@ class TestMarkdownFormat:
         assert "`possible_values` must be iterable" in stdout
         assert "`123456`" in stdout
         assert "aborted" in stdout
+
+    @staticmethod
+    def should_put_empty_line_before_second_header(runner: CliRunner, mocker: MockerFixture):
+        stdout = run_app_with_settings(mocker, runner, MultipleSettings)
+        assert "\n\n# `password`\n" in stdout
+
+    @staticmethod
+    def should_end_with_a_single_empty_line(runner: CliRunner, mocker: MockerFixture):
+        stdout = run_app_with_settings(mocker, runner, MultipleSettings)
+        assert not stdout.endswith("`\n\n"), f"'{stdout}' ends with empty line"

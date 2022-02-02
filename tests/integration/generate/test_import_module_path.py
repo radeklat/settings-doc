@@ -7,7 +7,7 @@ from pydantic import BaseSettings
 
 from settings_doc.importing import import_module_path
 from tests.fixtures.module_with_single_settings_class import SingleSettingsInModule
-from tests.fixtures.valid_settings import EmptySettings, FullSettings, RequiredSettings
+from tests.fixtures.valid_settings import EmptySettings, FullSettings, MultipleSettings, RequiredSettings
 
 _PREFIX = "Cannot read the module: "
 
@@ -24,12 +24,12 @@ class TestImportModulePath:
             ),
             pytest.param(
                 ("valid_settings",),
-                {EmptySettings, FullSettings, RequiredSettings},
+                {EmptySettings, FullSettings, RequiredSettings, MultipleSettings},
                 id="for a module with multiple matching classes",
             ),
             pytest.param(
                 ("valid_settings", "module_with_single_settings_class"),
-                {EmptySettings, FullSettings, RequiredSettings, SingleSettingsInModule},
+                {EmptySettings, FullSettings, RequiredSettings, SingleSettingsInModule, MultipleSettings},
                 id="for multiple modules with multiple matching classes",
             ),
         ],

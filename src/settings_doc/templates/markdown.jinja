@@ -10,8 +10,9 @@
 {% macro heading(level) -%}
     {{ '#' * (heading_offset + level) }}
 {%- endmacro %}
-{% for field in fields %}
-{{ heading(1) }} `{{ field.field_info.extra["env_names"]|list|first|upper }}`
+{% for field in fields %}{% if not loop.first %}
+
+{% else %}{% endif %}{{ heading(1) }} `{{ field.field_info.extra["env_names"]|list|first|upper }}`
 
 *{% if field.required %}*Required*{% else %}Optional{% endif %}*{% if field.default != None %}, default value: `{{ field.default }}`{% endif %}
 
@@ -37,11 +38,9 @@
         {% if not is_values_with_descriptions(possible_values) %}
             {% if possible_values|join("`, `")|length + 2 <= 75 %}
 `{{ possible_values|join("`, `") }}`
-
             {% else %}
                 {% for value in possible_values %}
 - `{{ value }}`
-
                 {% endfor %}
             {% endif %}
         {% else %}
