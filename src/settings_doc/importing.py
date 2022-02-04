@@ -1,6 +1,9 @@
 import importlib
+import importlib.util
 from functools import lru_cache
 from inspect import isclass
+from pathlib import Path
+from types import ModuleType
 from typing import List, Set, Tuple, Type
 
 from click import BadParameter, secho
@@ -72,6 +75,19 @@ def import_class_path(class_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]:
         settings.add(new_class)
 
     return settings
+
+
+@lru_cache()
+def import_module_from_files(files: Tuple[Path, ...]) -> Set[ModuleType]:
+    modules: Set[ModuleType] = set()
+
+    for file in files:
+        spec = importlib.util.spec_from_file_location(file.name.rsplit(".", maxsplit=1)[0], file)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        modules.add(module)
+
+    return modules
 
 
 def module_path_callback(value: List[str]) -> List[str]:
