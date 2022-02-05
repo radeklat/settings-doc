@@ -38,9 +38,12 @@ def run_app_with_settings(
     """
     if template:
         assert fmt == "markdown", "The `fmt` argument is ignored when `template` is used."
-        if isinstance(template, str):
-            def get_template(env: Environment, _) -> Template:
+
+        def get_template(env: Environment, _) -> Template:
+            if isinstance(template, str):
                 return env.from_string(template)
+            template.env = env
+            return template
         mocker.patch("settings_doc.main.get_template", get_template)
 
     if args is None:
