@@ -84,7 +84,10 @@ def import_module_from_files(files: Tuple[Path, ...]) -> Set[ModuleType]:
     for file in files:
         spec = importlib.util.spec_from_file_location(file.name.rsplit(".", maxsplit=1)[0], file)
         module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        try:
+            spec.loader.exec_module(module)
+        except FileNotFoundError as exc:
+            raise BadParameter(f"File not found: {file.name}") from exc
         modules.add(module)
 
     return modules
