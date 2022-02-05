@@ -13,7 +13,7 @@ from pydantic import BaseSettings
 from pydantic.fields import ModelField
 from typer import Option, Typer, colors
 
-from settings_doc import importing
+from settings_doc import importing, hooks
 
 app = Typer()
 
@@ -99,6 +99,18 @@ def generate(
         "more than once, in a priority order. Built-in templates will be used last if no "
         "matches found.",
     ),
+    hooks_file: List[Path] = Option(
+        [],
+        "--hooks",
+        "-h",
+        exists=True,
+        readable=True,
+        file_okay=True,
+        dir_okay=False,
+        resolve_path=True,
+        callback=hooks.hooks_path_callback,
+        help="Python files to load hooks from. Can be used more than once.",
+    )
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""
     settings: Set[Type[BaseSettings]] = importing.import_class_path(tuple(class_path)).union(
@@ -122,6 +134,15 @@ def generate(
         keep_trailing_newline=True,
     )
     env.globals["is_values_with_descriptions"] = is_values_with_descriptions
+
+    loaded_hooks = hooks.load_hooks_from_files(tuple(hooks_file))
+
+    for name, hook in loaded_hooks:
+        if name == hooks.HOOK_INITIALIZE_ENVIRONMENT:
+            hook(env)
+        elif name == hooks.HOOK_PRE_RENDER:
+            render_kwargs = hook(dict(render_kwargs))
+
     render = get_template(env, output_format).render(**render_kwargs)
 
     if update_file is None:
