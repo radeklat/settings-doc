@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "settings-doc"
-version = "0.8.1"
+version = "1.0.0"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"
@@ -25,6 +25,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Typing :: Typed",
 ]
 keywords = ["documentation", "environment variables", "generated", "markdown", "BaseSettings"]
@@ -34,7 +35,7 @@ homepage = "https://github.com/radeklat/settings-doc"
 settings-doc = "settings_doc.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.7.0"
+python = ">=3.7.2,<=3.11"
 Jinja2 = "^3.0.2"
 pydantic = "^1.8.2"
 typer = {version = "^0.4.0", extras = ["all"]}
@@ -42,7 +43,7 @@ typer = {version = "^0.4.0", extras = ["all"]}
 [tool.poetry.dev-dependencies]
 click = "^8.0.3"
 types-toml = "*"
-delfino = {extras = ["verify_all"], version = "^0.13.0"}
+delfino-core = {extras = ["verify_all", "dependencies-update"], version = "^4.0.1"}
 pytest-mock = "^3.6.1"
 
 [build-system]
@@ -80,9 +81,6 @@ exclude = '''
 testpaths = "tests/unit tests/integration"
 python_functions = "should_*"
 junit_family = "xunit2"
-# pytest-dotenv settings
-env_override_existing_values = 1
-env_files = ".env.test"
 
 # Structure: https://docs.pytest.org/en/stable/warnings.html
 # Values:    https://docs.python.org/3/library/warnings.html#describing-warning-filters
@@ -106,8 +104,7 @@ follow_imports = "silent"
 [[tool.mypy.overrides]]
 # Source code dependencies
 module = [
-    "influxdb_client.*",
-    "paho.*",
+    "delfino.*",
 ]
 ignore_missing_imports = true
 
@@ -123,10 +120,4 @@ add-ignore = [
     "D413",  # "Missing blank line after last section"
 ]
 
-[tool.delfino]
-reports_directory = "reports"
-sources_directory = "src"
-tests_directory = "tests"
-
-# Directories under `tests_directory` that contain specific test type.
-test_types = ["unit", "integration"]
+[tool.delfino.plugins.delfino-core]
