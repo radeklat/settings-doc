@@ -31,14 +31,12 @@ jobs: # A basic unit of work in a run
       python_version:
         type: string
     docker:
-      - image: circleci/python:<< parameters.python_version >>
+      - image: cimg/python:<< parameters.python_version >>
         environment:
           PIPENV_VENV_IN_PROJECT: "true"
     working_directory: << pipeline.parameters.working_directory >>
     steps:
       - checkout
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python<< parameters.python_version >>/site-packages
       - restore_cache:
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< parameters.python_version >>-{{ checksum "poetry.lock" }}
       - run:
@@ -57,8 +55,6 @@ jobs: # A basic unit of work in a run
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< parameters.python_version >>-{{ checksum "poetry.lock" }}
           paths:
             - ".venv"
-            - "/usr/local/bin"
-            - "/usr/local/lib/python<< parameters.python_version >>/site-packages"
       - run:
           name: Unit tests
           command: << pipeline.parameters.command_prefix >> test-unit
@@ -82,13 +78,11 @@ jobs: # A basic unit of work in a run
   build:
     working_directory: << pipeline.parameters.working_directory >>
     docker: # run the steps with Docker
-      - image: circleci/python:<< pipeline.parameters.python_version >>
+      - image: cimg/python:<< pipeline.parameters.python_version >>
         environment:
           PIPENV_VENV_IN_PROJECT: "true"
     steps:
       - checkout
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python<< pipeline.parameters.python_version >>/site-packages
       - restore_cache:
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
       - run:
@@ -103,7 +97,7 @@ jobs: # A basic unit of work in a run
   publish:
     working_directory: << pipeline.parameters.working_directory >>
     docker: # run the steps with Docker
-      - image: circleci/python:<< pipeline.parameters.python_version >>
+      - image: cimg/python:<< pipeline.parameters.python_version >>
     steps:
       - attach_workspace:
           at: << pipeline.parameters.working_directory >>
@@ -125,11 +119,9 @@ jobs: # A basic unit of work in a run
   release:
     working_directory: << pipeline.parameters.working_directory >>
     docker:
-      - image: circleci/python:<< pipeline.parameters.python_version >>
+      - image: cimg/python:<< pipeline.parameters.python_version >>
     steps:
       - checkout
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python<< pipeline.parameters.python_version >>/site-packages
       - restore_cache:
           key: << pipeline.parameters.cache_version >>-<< pipeline.parameters.project_name >>-<< pipeline.parameters.python_version >>-{{ checksum "poetry.lock" }}
       - gh/setup
@@ -154,7 +146,7 @@ workflows:
           context: << pipeline.parameters.project_name >>
           matrix:
             parameters:
-              python_version: [ "3.7", "3.8", "3.9", "3.10" ]
+              python_version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
       - build:
           name: Build
           requires:

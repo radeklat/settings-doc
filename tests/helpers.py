@@ -1,5 +1,5 @@
 from collections.abc import Iterable as IterableCollection
-from typing import Iterable, List, Type, Union
+from typing import Iterable, List, Optional, Type, Union
 
 from click.testing import Result
 from jinja2 import Environment, Template
@@ -14,7 +14,7 @@ def run_app_with_settings(
     mocker: MockerFixture,
     runner: CliRunner,
     settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]],
-    args: List[str] = None,
+    args: Optional[List[str]] = None,
     fmt: str = "markdown",
     template: Union[str, Template, None] = None,
 ) -> str:

@@ -5,92 +5,97 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 Types of changes are:
 
-- **Added** for new features.
-- **Changed** for changes in existing functionality.
+- **Breaking changes** for breaking changes.
+- **Features** for new features or changes in existing functionality.
+- **Fixes** for any bug fixes.
 - **Deprecated** for soon-to-be removed features.
-- **Removed** for now removed features.
-- **Fixed** for any bug fixes.
-- **Security** in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [1.0.0] - 2022-12-29
+
+### Features
+
+- Add support for Python 3.11.
+
+### Fixes
+
+- Dependencies update.
+
 ## [0.8.1] - 2022-02-02
 
-### Fixed
+### Fixes
 
 - Missing space before headings in Markdown template.
 
 ## [0.8.0] - 2022-01-25
 
-### Added
+### Features
 
 - `classes` of type `Dict[Type[BaseSettings], List[ModelField]]` exposed to templates.
 
 ## [0.7.0] - 2021-11-26
 
-### Removed
+### Breaking changes
 
-- Support for Python 3.6.
-- `tasks` folder, in favour of `delfino`.
+- Removed support for Python 3.6.
+- Removed `tasks` folder, in favour of `delfino`.
 
 ## [0.6.1] - 2021-11-17
 
-### Fixed
+### Fixes
 
 - Removed unused dependency on `termcolor`.
 
 ## [0.6.0] - 2021-11-17
 
-### Changed
+### Features
 
 - The `--class` option can be specified more than once and is also optional.
-
-### Added
-
-- An option to use all sub-classes of `pydantic.BaseSettings` inside a module with a new `--module` option.
+- Option to use all sub-classes of `pydantic.BaseSettings` inside a module with a new `--module` option.
 
 ## [0.5.1] - 2021-11-12
 
-### Fixed
+### Fixes
 
 - Updating document when the content hasn't changed no longer fails.
 
 ## [0.5.0] - 2021-11-12
 
-### Changed
+### Features
 
 - Remove top level heading from the Markdown template.
 
-### Fixed
+### Fixes
 
 - Description of `generate --templates`.
 
 ## [0.4.0] - 2021-11-11
 
-### Changed
+### Breaking changes
 
 - All existing options moved in the `generate` sub-command.
 
-### Added
+### Features
 
 - New sub-command `templates` for copying templates into selected folder.
 
 ## [0.3.0] - 2021-11-10
 
-### Changed
+### Breaking changes
 
 - Project renamed to `settings-doc`
 
 ## [0.2.0] - 2021-11-09
 
-### Added
+### Features
 
 - Option `--update` to overwrite an existing file.
 - Option `--between` to update only a portion of a file specified by `--update`, between two given marks.
 
 ## [0.1.1] - 2021-11-07
 
-### Fixed
+### Fixes
 
 Add classifiers to the package.
 
@@ -98,7 +103,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/0.8.1...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/radeklat/settings-doc/compare/0.8.1...1.0.0
 [0.8.1]: https://github.com/radeklat/settings-doc/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/radeklat/settings-doc/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/radeklat/settings-doc/compare/0.6.1...0.7.0
