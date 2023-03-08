@@ -11,7 +11,7 @@
     <a href="https://github.com/radeklat/settings-doc/tags">
         <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/radeklat/settings-doc">
     </a>
-    <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2022">
+    <img alt="Maintenance" src="https://img.shields.io/maintenance/yes/2023">
     <a href="https://github.com/radeklat/settings-doc/commits/main">
         <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/radeklat/settings-doc">
     </a>
