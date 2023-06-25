@@ -27,7 +27,7 @@ class TestTemplatesCopy:
             files = os.listdir(folder)
             filename = Path(folder) / files[0]
 
-            with open(filename, "r", encoding="utf-8") as file:
+            with open(filename, encoding="utf-8") as file:
                 old_content = file.read()
 
             with open(filename, "w", encoding="utf-8") as file:
@@ -35,7 +35,7 @@ class TestTemplatesCopy:
 
             copy_templates(runner, folder)
 
-            with open(filename, "r", encoding="utf-8") as file:
+            with open(filename, encoding="utf-8") as file:
                 new_content = file.read()
 
         assert old_content == new_content

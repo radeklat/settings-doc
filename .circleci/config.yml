@@ -12,10 +12,10 @@ parameters:
     default: ~/settings-doc
   python_version:
     type: string
-    default: "3.7"
+    default: "3.8"
   cache_version:
     type: string
-    default: "3"
+    default: "4"
   git_trunk_branch:
     type: string
     default: "main"
@@ -146,7 +146,7 @@ workflows:
           context: << pipeline.parameters.project_name >>
           matrix:
             parameters:
-              python_version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+              python_version: [ "3.8", "3.9", "3.10", "3.11" ]
       - build:
           name: Build
           requires:

@@ -9,7 +9,7 @@
       <excludeFolder url="file://$MODULE_DIR$/reports" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (settings-doc)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.11 (settings-doc)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
