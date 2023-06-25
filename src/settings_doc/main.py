@@ -5,7 +5,7 @@ from enum import Enum, auto
 from itertools import chain
 from os import listdir
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Type
+from typing import Any, Dict, Final, List, Optional, Set, Tuple, Type
 
 from click import Abort, secho
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
@@ -18,7 +18,7 @@ from settings_doc import importing
 app = Typer()
 
 
-TEMPLATES_FOLDER: Path = Path(__file__).parent / "templates"
+TEMPLATES_FOLDER: Final[Path] = Path(__file__).parent / "templates"
 
 
 class OutputFormat(Enum):
@@ -128,7 +128,7 @@ def generate(
         print(render)
         return
 
-    with open(update_file, "r", encoding="utf-8") as file:
+    with open(update_file, encoding="utf-8") as file:
         content = file.read()
 
     with open(update_file, "w", encoding="utf-8") as file:

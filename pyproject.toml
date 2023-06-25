@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "settings-doc"
-version = "1.0.0"
+version = "2.0.0"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"
@@ -21,7 +21,6 @@ classifiers = [
     "Topic :: Utilities",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -35,15 +34,15 @@ homepage = "https://github.com/radeklat/settings-doc"
 settings-doc = "settings_doc.main:app"
 
 [tool.poetry.dependencies]
-python = ">=3.7.2,<=3.11"
+python = "^3.8"
 Jinja2 = "^3.0.2"
 pydantic = "^1.8.2"
-typer = {version = "^0.4.0", extras = ["all"]}
+typer = {version = "^0.9", extras = ["all"]}  # https://typer.tiangolo.com/release-notes/
 
 [tool.poetry.dev-dependencies]
 click = "^8.0.3"
 types-toml = "*"
-delfino-core = {extras = ["verify_all", "dependencies-update"], version = "^4.0.1"}
+delfino-core = {extras = ["verify_all", "dependencies-update"], version = "^5.0"}
 pytest-mock = "^3.6.1"
 
 [build-system]

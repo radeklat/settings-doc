@@ -12,6 +12,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [2.0.0] - 2023-06-25
+
+### Breaking changes
+
+- Drops Python 3.7 support.
+
 ## [1.0.0] - 2022-12-29
 
 ### Features
@@ -52,13 +58,13 @@ Types of changes are:
 ### Features
 
 - The `--class` option can be specified more than once and is also optional.
-- Option to use all sub-classes of `pydantic.BaseSettings` inside a module with a new `--module` option.
+- Option to use all subclasses of `pydantic.BaseSettings` inside a module with a new `--module` option.
 
 ## [0.5.1] - 2021-11-12
 
 ### Fixes
 
-- Updating document when the content hasn't changed no longer fails.
+- Updating document when the content hasn't changed, no longer fails.
 
 ## [0.5.0] - 2021-11-12
 
@@ -103,7 +109,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/radeklat/settings-doc/compare/1.0.0...2.0.0
 [1.0.0]: https://github.com/radeklat/settings-doc/compare/0.8.1...1.0.0
 [0.8.1]: https://github.com/radeklat/settings-doc/compare/0.8.0...0.8.1
 [0.8.0]: https://github.com/radeklat/settings-doc/compare/0.7.0...0.8.0

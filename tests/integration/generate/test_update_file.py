@@ -26,7 +26,7 @@ def _run_app_update(
             filename = write_file.name
         for _ in range(repetitions):
             stdout = run_app_with_settings(mocker, runner, EmptySettings, ["--update", filename, *args])
-        with open(filename, "r", encoding="utf-8") as read_file:
+        with open(filename, encoding="utf-8") as read_file:
             new_content = read_file.read().lower()
         return stdout, new_content
     finally:
