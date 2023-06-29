@@ -1,0 +1,12 @@
+-   id: insert-settings-doc-md
+    name: insert settings-doc markdown
+    description: This hook inserts settings-doc generated markdown to a file.
+    entry: settings-doc generate --output-format markdown
+    args:
+      - '--module src.settings'
+      - '--update README.md'
+      - '--between "<!-- generated env. vars. start -->" "<!-- generated env. vars. end -->"'
+      - '--heading-offset 1'
+    language: python
+    types: [file, python]
+    pass_filenames: false
