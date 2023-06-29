@@ -288,7 +288,7 @@ Example `.pre-commit-config.yaml` section provided below:
         - '--heading-offset'
         - '1'
       additional_dependencies:
-       - "pyyaml>=5.3.1"
+        - "pyyaml>=5.3.1"
 ```
 
 # Features overview
