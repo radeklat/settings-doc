@@ -10,7 +10,8 @@
       - '--between'
       - "<!-- generated env. vars. start -->"
       - "<!-- generated env. vars. end -->"
-      - '--heading-offset 1'
+      - '--heading-offset'
+      - '1'
     language: python
     types: [file, python]
     pass_filenames: false
