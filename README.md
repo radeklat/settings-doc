@@ -46,6 +46,7 @@ It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) temp
 - [Advanced usage](#advanced-usage)
   - [Custom templates](#custom-templates)
   - [Custom settings attributes in templates](#custom-settings-attributes-in-templates)
+  - [As a pre-commit hook](#as-a-pre-commit-hook)
 - [Features overview](#features-overview)
   - [Markdown](#markdown)
   - [.env](#env)
@@ -256,6 +257,38 @@ To access information from the `BaseSettings` classes, use the `classes` variabl
 {% for cls, fields in classes.items() %}
 # {{ cls.__name__ }}
 {% endfor %}
+```
+
+## As a pre-commit hook
+
+It's possible to use `settings-doc` as a pre-commit hook, however, that requires some careful fine-tuning.
+
+1. You have to provide *all* the arguments (except `--output-format markdown`) in the `args` section,
+unless, by some extraordinary strike of luck, your settings are already located at `src.settings` module.
+2. You have to provide `additional_dependencies`, specifing each package, that is imported in
+your module. For example, if you use yaml-loading for your settings, and you have `import yaml` in
+your module, you have to specify it. Depending on how your imports are organized, you might need to
+specify *all* of your dependencies.
+
+Example `.pre-commit-config.yaml` section provided below:
+
+```yaml
+- repo: https://github.com/radeklat/settings-doc
+  rev: '3.0.0'
+  hooks:
+    - id: insert-settings-doc-md
+      args:
+        - '--module'
+        - 'src.settings'
+        - '--update'
+        - 'README.md'
+        - '--between'
+        - "<!-- generated env. vars. start -->"
+        - "<!-- generated env. vars. end -->"
+        - '--heading-offset'
+        - '1'
+      additional_dependencies:
+        - "pyyaml>=5.3.1"
 ```
 
 # Features overview
