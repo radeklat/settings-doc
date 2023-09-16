@@ -294,6 +294,15 @@ Example `.pre-commit-config.yaml` section provided below:
         - "pyyaml>=5.3.1"
 ```
 
+You can use the same hook to check if the documentation is up-to-date in CI:
+
+```shell
+pip install pre-commit
+pre-commit run --all-files settings-doc-markdown  # or other settings-doc-<output-format>
+```
+
+Consider caching the `~/.cache/pre-commit` environment cache for faster subsequent runs.
+
 # Features overview
 
 - Output into several formats with `--output-format`: markdown, dotenv
