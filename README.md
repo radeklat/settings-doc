@@ -261,12 +261,15 @@ To access information from the `BaseSettings` classes, use the `classes` variabl
 
 ## As a pre-commit hook
 
-It's possible to use `settings-doc` as a pre-commit hook, however, that requires some careful fine-tuning.
+It's possible to use `settings-doc` as a pre-commit hook to keep your documentation up to date. There is one hook `id` per output format:
+- `settings-doc-markdown`
+- `settings-doc-dotenv`
 
-1. You have to provide *all* the arguments (except `--output-format markdown`) in the `args` section,
-unless, by some extraordinary strike of luck, your settings are already located at `src.settings` module.
-2. You have to provide `additional_dependencies`, specifing each package, that is imported in
-your module. For example, if you use yaml-loading for your settings, and you have `import yaml` in
+There are two caveats:
+
+1. You have to provide *all* the arguments (except `--output-format`) in the `args` section.
+2. You have to provide `additional_dependencies`, specifying each package, that is imported in
+your module. For example, if you use YAML loading for your settings, and you have `import yaml` in
 your module, you have to specify it. Depending on how your imports are organized, you might need to
 specify *all* of your dependencies.
 
@@ -276,7 +279,7 @@ Example `.pre-commit-config.yaml` section provided below:
 - repo: https://github.com/radeklat/settings-doc
   rev: '3.0.0'
   hooks:
-    - id: insert-settings-doc-md
+    - id: settings-doc-markdown
       args:
         - '--module'
         - 'src.settings'

@@ -1,17 +1,14 @@
--   id: insert-settings-doc-md
-    name: insert settings-doc markdown
-    description: This hook inserts settings-doc generated markdown to a file.
-    entry: settings-doc generate --output-format markdown
-    args:
-      - '--module'
-      - 'src.settings'
-      - '--update'
-      - 'README.md'
-      - '--between'
-      - "<!-- generated env. vars. start -->"
-      - "<!-- generated env. vars. end -->"
-      - '--heading-offset'
-      - '1'
-    language: python
-    types: [file, python]
-    pass_filenames: false
+- id: settings-doc-markdown
+  name: Generate settings-doc Markdown
+  description: This hook generates a Markdown documentation from pydantic.BaseSettings to a file.
+  entry: settings-doc generate --output-format markdown
+  language: python
+  types: [file, python]
+  pass_filenames: false
+- id: settings-doc-dotenv
+  name: Generate settings-doc .env
+  description: This hook generates a .env template from pydantic.BaseSettings to a file.
+  entry: settings-doc generate --output-format dotenv
+  language: python
+  types: [file, python]
+  pass_filenames: false
