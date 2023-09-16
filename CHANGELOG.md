@@ -12,6 +12,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [2.1.0] - 2023-09-16
+
+### Features
+
+- Add [support for `pre-commit` hooks](README.md#as-a-pre-commit-hook).
+
 ## [2.0.0] - 2023-06-25
 
 ### Breaking changes
@@ -109,7 +115,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/radeklat/settings-doc/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/radeklat/settings-doc/compare/1.0.0...2.0.0
 [1.0.0]: https://github.com/radeklat/settings-doc/compare/0.8.1...1.0.0
 [0.8.1]: https://github.com/radeklat/settings-doc/compare/0.8.0...0.8.1
