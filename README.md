@@ -24,6 +24,9 @@
     <a href="https://www.python.org/doc/versions/">
         <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/settings-doc">
     </a>
+    <a href="https://pydantic.dev">
+        <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json" alt="Pydantic Version 2" style="max-width:100%;">
+    </a>
 </p>
 
 The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic.BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings).
