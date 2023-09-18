@@ -3,7 +3,7 @@ from typing import Iterable, List, Optional, Type, Union
 
 from click.testing import Result
 from jinja2 import Environment, Template
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 

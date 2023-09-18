@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="Black">
+    <option name="sdkUUID" value="aec24413-857e-4411-be97-b34e7df4fe28" />
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (settings-doc)" project-jdk-type="Python SDK" />
   <component name="PythonCompatibilityInspectionAdvertiser">
     <option name="version" value="3" />

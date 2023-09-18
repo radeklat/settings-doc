@@ -1,5 +1,6 @@
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
-class PossibleValuesNotIterableSettings(BaseSettings):
-    logging_level: str = Field(..., possible_values=123456)
+class ExamplesNotIterableSettings(BaseSettings):
+    logging_level: str = Field(..., examples=123456)  # type: ignore[arg-type]

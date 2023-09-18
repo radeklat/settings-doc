@@ -1,7 +1,7 @@
 from typing import Set, Type
 
 import pytest
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
