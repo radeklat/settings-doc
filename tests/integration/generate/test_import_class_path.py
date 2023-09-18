@@ -2,7 +2,7 @@ from typing import List, Set, Type
 
 import pytest
 from click import BadParameter
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 from settings_doc.importing import import_class_path
 from tests.fixtures.valid_settings import EmptySettings, FullSettings

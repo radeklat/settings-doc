@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "settings-doc"
-version = "2.1.0"
+version = "3.0.0"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"
@@ -9,6 +9,7 @@ readme = "README.md"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
+    "Framework :: Pydantic :: 2",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
     "Topic :: Documentation",
@@ -36,8 +37,9 @@ settings-doc = "settings_doc.main:app"
 [tool.poetry.dependencies]
 python = "^3.8"
 Jinja2 = "^3.0.2"
-pydantic = "^1.8.2"
+pydantic = "^2.3"
 typer = {version = "^0.9", extras = ["all"]}  # https://typer.tiangolo.com/release-notes/
+pydantic-settings = "^2.0.3"
 
 [tool.poetry.dev-dependencies]
 click = "^8.0.3"

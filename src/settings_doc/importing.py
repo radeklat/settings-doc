@@ -4,7 +4,7 @@ from inspect import isclass
 from typing import List, Set, Tuple, Type
 
 from click import BadParameter, secho
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 from typer import colors
 
 _MODULE_ERROR_MSG = "No `pydantic.BaseSettings` subclasses found in module '{module_path}'."

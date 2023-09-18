@@ -2,7 +2,7 @@
 heading_offset: {{ heading_offset }}
 
 fields:
-{% for field in fields %}
+{% for env_name, field in fields %}
 - name: {{ field.name }}
     {% for attr_name in field.__slots__ %}
         {% if field|attr(attr_name) and attr_name != "field_info" and attr_name != "name" %}
@@ -10,13 +10,13 @@ fields:
         {% endif %}
     {% endfor %}
   - field_info:
-    {% for attr_name in field.field_info.__slots__ %}
-        {% if field.field_info|attr(attr_name) and attr_name != "extra" %}
-    {{ attr_name }}: "{{ field.field_info|attr(attr_name) }}"
+    {% for attr_name in field.__slots__ %}
+        {% if field|attr(attr_name) and attr_name != "extra" %}
+    {{ attr_name }}: "{{ field|attr(attr_name) }}"
         {% endif %}
     {% endfor %}
     - extra:
-    {% for key, value in field.field_info.extra.items() %}
+    {% for key, value in field.json_schema_extra.items() %}
       {{ key }}: "{{ value }}"
     {% endfor %}
 

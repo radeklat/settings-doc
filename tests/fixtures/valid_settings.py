@@ -1,4 +1,7 @@
-from pydantic import BaseSettings, Field
+from typing import Literal
+
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 SETTINGS_ATTR = "logging_level"
 SETTINGS_MARKDOWN_FIRST_LINE = f"# `{SETTINGS_ATTR}`\n"
@@ -12,9 +15,12 @@ class FullSettings(BaseSettings):
     logging_level: str = Field(
         "some_value",
         description="use FullSettings like this",
-        example="this is an example use",
-        possible_values=["aaa", "bbb"],
+        examples=["aaa", "bbb"],
     )
+
+
+class LiteralSettings(BaseSettings):
+    logging_level: Literal["debug", "info"]
 
 
 class RequiredSettings(BaseSettings):

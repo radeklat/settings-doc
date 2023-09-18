@@ -1,15 +1,17 @@
-from typing import Any
+from typing import Any, Type
 
 import pytest
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
-from tests.fixtures.invalid_settings import PossibleValuesNotIterableSettings
+from tests.fixtures.invalid_settings import ExamplesNotIterableSettings
 from tests.fixtures.valid_settings import (
     SETTINGS_MARKDOWN_FIRST_LINE,
     EmptySettings,
     FullSettings,
+    LiteralSettings,
     MultipleSettings,
     RequiredSettings,
 )
@@ -19,18 +21,27 @@ from tests.helpers import run_app_with_settings
 class TestMarkdownFormat:
     @staticmethod
     @pytest.mark.parametrize(
-        "expected_string",
+        "expected_string, settings_class",
         [
-            pytest.param(f"{SETTINGS_MARKDOWN_FIRST_LINE}\n", id="variable name"),
-            pytest.param("\n\n*optional*, ", id="optional flag"),
-            pytest.param(", default value: `some_value`\n\n", id="default value"),
-            pytest.param("\n\nuse fullsettings like this\n\n", id="description"),
-            pytest.param("\n\n## examples\n\nthis is an example use\n\n", id="example"),
-            pytest.param("\n\n## possible values\n\n`aaa`, `bbb`\n\n", id="possible values"),
+            pytest.param(f"{SETTINGS_MARKDOWN_FIRST_LINE}\n", FullSettings, id="variable name"),
+            pytest.param("\n\n*optional*, ", FullSettings, id="optional flag"),
+            pytest.param(", default value: `some_value`\n\n", FullSettings, id="default value"),
+            pytest.param("\n\nuse fullsettings like this\n\n", FullSettings, id="description"),
+            pytest.param("\n\n## examples\n\n`aaa`, `bbb`\n\n", FullSettings, id="examples"),
+            pytest.param(
+                "\n\n## possible values\n\n`debug`, `info`\n\n",
+                LiteralSettings,
+                id="possible values",
+            ),
         ],
     )
-    def should_generate(runner: CliRunner, mocker: MockerFixture, expected_string: str):
-        assert expected_string in run_app_with_settings(mocker, runner, FullSettings)
+    def should_generate(
+        runner: CliRunner,
+        mocker: MockerFixture,
+        expected_string: str,
+        settings_class: Type[BaseSettings],
+    ):
+        assert expected_string in run_app_with_settings(mocker, runner, settings_class)
 
     @staticmethod
     def should_generate_required_flag(runner: CliRunner, mocker: MockerFixture):
@@ -46,9 +57,9 @@ class TestMarkdownFormat:
 
         class Settings(BaseSettings):
             # +2 chars. for backticks
-            fits: str = Field(..., possible_values=[a_value])
-            fits_not: str = Field(..., possible_values=[b_value])
-            not_values_and_descriptions: str = Field(..., possible_values=[(1, 2, 3), (4, 5, 6, 7)])
+            fits: str = Field(..., examples=[a_value])
+            fits_not: str = Field(..., examples=[b_value])
+            not_values_and_descriptions: str = Field(..., examples=[(1, 2, 3), (4, 5, 6, 7)])
 
         stdout = run_app_with_settings(mocker, runner, Settings)
 
@@ -58,7 +69,7 @@ class TestMarkdownFormat:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "possible_values, expected_string",
+        "examples, expected_string",
         [
             pytest.param(
                 [("name1", "description1"), ("no_description_name",)],
@@ -67,11 +78,16 @@ class TestMarkdownFormat:
             ),
         ],
     )
-    def should_list_values_for(runner: CliRunner, mocker: MockerFixture, possible_values: Any, expected_string: str):
+    def should_list_values_for(
+        runner: CliRunner,
+        mocker: MockerFixture,
+        examples: Any,
+        expected_string: str,
+    ):
         class Settings(BaseSettings):
-            var: str = Field(..., possible_values=possible_values)
+            var: str = Field(..., examples=examples)
 
-        assert f"## possible values\n\n{expected_string}\n\n" in run_app_with_settings(mocker, runner, Settings)
+        assert f"## examples\n\n{expected_string}\n\n" in run_app_with_settings(mocker, runner, Settings)
 
     @staticmethod
     def should_not_show_missing_description_example_possible_and_default_values(
@@ -86,9 +102,9 @@ class TestMarkdownFormat:
         assert expected_string in run_app_with_settings(mocker, runner, EmptySettings, ["--heading-offset", "1"])
 
     @staticmethod
-    def should_abort_when_possible_values_are_not_iterable(runner: CliRunner, mocker: MockerFixture):
-        stdout = run_app_with_settings(mocker, runner, PossibleValuesNotIterableSettings)
-        assert "`possible_values` must be iterable" in stdout
+    def should_abort_when_examples_are_not_iterable(runner: CliRunner, mocker: MockerFixture):
+        stdout = run_app_with_settings(mocker, runner, ExamplesNotIterableSettings)
+        assert "`examples` must be iterable" in stdout
         assert "`123456`" in stdout
         assert "aborted" in stdout
 

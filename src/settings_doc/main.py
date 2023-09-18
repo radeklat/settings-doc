@@ -1,16 +1,18 @@
 import re
 import shutil
+import sys
 from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
 from itertools import chain
 from os import listdir
 from pathlib import Path
-from typing import Any, Dict, Final, List, Optional, Set, Tuple, Type
+from typing import Any, Dict, Final, List, Literal, Optional, Set, Tuple, Type
 
 from click import Abort, secho
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
-from pydantic import BaseSettings
-from pydantic.fields import ModelField
+from pydantic.fields import FieldInfo
+from pydantic_core import PydanticUndefined
+from pydantic_settings import BaseSettings
 from typer import Option, Typer, colors
 
 from settings_doc import importing
@@ -34,14 +36,26 @@ class OutputFormat(Enum):
 
 def is_values_with_descriptions(value: Any) -> bool:
     if not isinstance(value, IterableCollection):
-        secho(f"`possible_values` must be iterable but `{value}` used.", fg=colors.RED)
+        secho(f"`examples` must be iterable but `{value}` used.", fg=colors.RED)
         raise Abort()
 
     return all(list(map(lambda item: isinstance(item, tuple) and 2 >= len(item) >= 1, value)))
 
 
+def has_default_value(field: FieldInfo) -> bool:
+    return field.default is not PydanticUndefined
+
+
 def get_template(env: Environment, output_format: OutputFormat) -> Template:
     return env.get_template(f"{output_format.value}.jinja")
+
+
+def is_typing_literal(field: FieldInfo) -> bool:
+    if sys.version_info < (3, 9) and field.annotation is not None and hasattr(field.annotation, "__origin__"):
+        return field.annotation.__origin__ is Literal
+
+    # The class doesn't exist in Python 3.8 and below
+    return field.annotation.__class__.__name__ == "_LiteralGenericAlias"
 
 
 @app.command()
@@ -109,8 +123,8 @@ def generate(
         secho("No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)
         raise Abort()
 
-    fields: List[ModelField] = list(chain.from_iterable(cls.__fields__.values() for cls in settings))
-    classes: Dict[Type[BaseSettings], List[ModelField]] = {cls: list(cls.__fields__.values()) for cls in settings}
+    fields: List[Tuple[str, FieldInfo]] = list(chain.from_iterable(list(cls.model_fields.items()) for cls in settings))
+    classes: Dict[Type[BaseSettings], List[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
 
     render_kwargs = {"heading_offset": heading_offset, "fields": fields, "classes": classes}
 
@@ -122,6 +136,8 @@ def generate(
         keep_trailing_newline=True,
     )
     env.globals["is_values_with_descriptions"] = is_values_with_descriptions
+    env.globals["has_default_value"] = has_default_value
+    env.globals["is_typing_literal"] = is_typing_literal
     render = get_template(env, output_format).render(**render_kwargs)
 
     if update_file is None:
