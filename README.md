@@ -29,9 +29,9 @@
     </a>
 </p>
 
-The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic.BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings).
+The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic_settings.BaseSettings`](https://docs.pydantic.dev/latest/usage/pydantic_settings/).
 
-It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) templating engine and [Typer](https://typer.tiangolo.com/) framework. If you don't like the built-in templates, you can easily modify them or write completely custom ones. All attributes of the [`BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings) models are exposed to the templates.
+It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) templating engine and [Typer](https://typer.tiangolo.com/) framework. If you don't like the built-in templates, you can easily modify them or write completely custom ones. All attributes of the [`BaseSettings`](https://docs.pydantic.dev/latest/usage/pydantic_settings/) models are exposed to the templates.
 
 <!--
     How to generate TOC from PyCharm:
@@ -66,10 +66,10 @@ See `settings-doc --help` for all options.
 
 ## Minimal example
 
-Let's assume the following [`BaseSettings`](https://pydantic-docs.helpmanual.io/usage/settings) in `src/settings.py` of a project:
+Let's assume the following [`BaseSettings`](https://docs.pydantic.dev/latest/usage/pydantic_settings/) in `src/settings.py` of a project:
 
 ```python
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class AppSettings(BaseSettings):
     logging_level: str
@@ -117,7 +117,7 @@ If multiple classes contain a field with the same name, all instances will appea
 You can add any extra field parameters to the settings. By default, `settings-doc` will utilise the default value, whether the parameter is required or optional, description, example value, and list of possible values:
 
 ```python
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings, Field
 
 class AppSettings(BaseSettings):
     logging_level: str = Field(
@@ -235,11 +235,11 @@ To create new ones, create a folder and then a Jinja2 template with a file names
 ```shell script
 mkdir custom_templates
 
-echo "{{ field.title }}" > custom_templates/only_titles.jinja
+echo "{{ field.description }}" > custom_templates/only_descriptions.jinja
 
 settings-doc generate \
  --class src.settings.AppSettings \
- --output-format only_titles \
+ --output-format only_descriptions \
  --templates custom_templates
 ```
 
@@ -247,12 +247,10 @@ settings-doc generate \
 
 By default, there are several variables available in all templates:
 - `heading_offset` - the value of the `--heading-offset` option. Defaults to `0`.
-- `fields` the value of `BaseSettings.__fields__.values()`. In other words, a list of individual settings fields. Each field is then an instance of [`ModelField`](https://github.com/samuelcolvin/pydantic/blob/master/pydantic/fields.py). If multiple classes are used to generate the documentation, `ModelField`s from all classes are collected into `fields`. The information about original classes is not retained.
-- `classes` - a dictionary, where keys are the `BaseSettings` sub-classes and values are lists of extracted `ModelField`s of that class. This can be used for example to split individual classes into sections.
+- `fields` is a list of `str` / [`FieldInfo`](https://github.com/samuelcolvin/pydantic/blob/master/pydantic/fields.py) tuples. The string is the name of the settings attribute and the values come from `BaseSettings.model_fields.values()`. In other words, a list of individual settings fields and their names. If multiple classes are used to generate the documentation, `FieldInfo`s from all classes are collected into `fields`. The information about original classes is not retained.
+- `classes` - a dictionary, where keys are the `BaseSettings` sub-classes and values are lists of extracted `FieldInfo`s of that class. This can be used for example to split individual classes into sections.
 
-Extra parameters unknown to pydantic are stored in `field.field_info.extra`. Examples of such parameters are `example` and `possible_values`.
-
-Even the bare `ModelField` without any extra parameters has a large number of attributes. To see them all, run this `settings-doc` with `--format debug`.
+Extra parameters unknown to pydantic can be stored as a dict in the `json_schema_extra` attribute.
 
 To access information from the `BaseSettings` classes, use the `classes` variable in the templates:
 
