@@ -146,7 +146,7 @@ workflows:
           context: << pipeline.parameters.project_name >>
           matrix:
             parameters:
-              python_version: [ "3.8", "3.9", "3.10", "3.11" ]
+              python_version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
       - build:
           name: Build
           requires:
