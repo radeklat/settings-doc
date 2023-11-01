@@ -14,6 +14,7 @@ from tests.fixtures.valid_settings import SETTINGS_MARKDOWN_FIRST_LINE
 
 
 def build() -> CompletedProcess:
+    run(["pip", "install", "poetry"], check=False)
     return run(["poetry", "build"], check=True)
 
 

@@ -12,6 +12,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [3.0.1] - 2023-11-01
+
+### Fixes
+
+- Correctly pass field names from `validation_alias` when used.
+
 ## [3.0.0] - 2023-09-19
 
 ### Breaking changes
@@ -134,7 +140,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.0.1...HEAD
+[3.0.1]: https://github.com/radeklat/settings-doc/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/radeklat/settings-doc/compare/2.1.0...3.0.0
 [2.1.0]: https://github.com/radeklat/settings-doc/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/radeklat/settings-doc/compare/1.0.0...2.0.0

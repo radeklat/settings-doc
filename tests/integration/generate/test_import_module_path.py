@@ -13,6 +13,9 @@ from tests.fixtures.valid_settings import (
     LiteralSettings,
     MultipleSettings,
     RequiredSettings,
+    ValidationAliasChoicesSettings,
+    ValidationAliasPathSettings,
+    ValidationAliasSettings,
 )
 
 _PREFIX = "Cannot read the module: "
@@ -36,6 +39,9 @@ class TestImportModulePath:
                     LiteralSettings,
                     RequiredSettings,
                     MultipleSettings,
+                    ValidationAliasSettings,
+                    ValidationAliasPathSettings,
+                    ValidationAliasChoicesSettings,
                 },
                 id="for a module with multiple matching classes",
             ),
@@ -48,6 +54,9 @@ class TestImportModulePath:
                     RequiredSettings,
                     SingleSettingsInModule,
                     MultipleSettings,
+                    ValidationAliasSettings,
+                    ValidationAliasPathSettings,
+                    ValidationAliasChoicesSettings,
                 },
                 id="for multiple modules with multiple matching classes",
             ),
