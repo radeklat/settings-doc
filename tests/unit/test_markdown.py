@@ -1,6 +1,7 @@
 from typing import Any, Type
 
 import pytest
+from _pytest.logging import LogCaptureFixture
 from pydantic import Field
 from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
@@ -14,6 +15,9 @@ from tests.fixtures.valid_settings import (
     LiteralSettings,
     MultipleSettings,
     RequiredSettings,
+    ValidationAliasChoicesSettings,
+    ValidationAliasPathSettings,
+    ValidationAliasSettings,
 )
 from tests.helpers import run_app_with_settings
 
@@ -24,6 +28,7 @@ class TestMarkdownFormat:
         "expected_string, settings_class",
         [
             pytest.param(f"{SETTINGS_MARKDOWN_FIRST_LINE}\n", FullSettings, id="variable name"),
+            pytest.param(f"{SETTINGS_MARKDOWN_FIRST_LINE}\n", ValidationAliasSettings, id="validation alias"),
             pytest.param("\n\n*optional*, ", FullSettings, id="optional flag"),
             pytest.param(", default value: `some_value`\n\n", FullSettings, id="default value"),
             pytest.param("\n\nuse fullsettings like this\n\n", FullSettings, id="description"),
@@ -42,6 +47,23 @@ class TestMarkdownFormat:
         settings_class: Type[BaseSettings],
     ):
         assert expected_string in run_app_with_settings(mocker, runner, settings_class)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "settings_class",
+        [
+            pytest.param(ValidationAliasPathSettings, id="validation AliasPath"),
+            pytest.param(ValidationAliasChoicesSettings, id="validation AliasChoices"),
+        ],
+    )
+    def should_log_error_for(
+        runner: CliRunner,
+        mocker: MockerFixture,
+        settings_class: Type[BaseSettings],
+        caplog: LogCaptureFixture,
+    ):
+        assert f"{SETTINGS_MARKDOWN_FIRST_LINE}\n" not in run_app_with_settings(mocker, runner, settings_class)
+        assert "Unsupported validation alias" in caplog.text
 
     @staticmethod
     def should_generate_required_flag(runner: CliRunner, mocker: MockerFixture):

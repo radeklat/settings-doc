@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import Field
+from pydantic import AliasChoices, AliasPath, Field
 from pydantic_settings import BaseSettings
 
 SETTINGS_ATTR = "logging_level"
@@ -30,3 +30,15 @@ class RequiredSettings(BaseSettings):
 class MultipleSettings(BaseSettings):
     username: str
     password: str
+
+
+class ValidationAliasSettings(BaseSettings):
+    logging_level_alias: str = Field(..., validation_alias="logging_level")
+
+
+class ValidationAliasPathSettings(BaseSettings):
+    logging_level: str = Field(..., validation_alias=AliasPath("logging_level", 0))
+
+
+class ValidationAliasChoicesSettings(BaseSettings):
+    logging_level: str = Field(..., validation_alias=AliasChoices("logging", "level"))

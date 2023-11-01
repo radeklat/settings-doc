@@ -1,12 +1,12 @@
+import logging
 import re
 import shutil
 import sys
 from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
-from itertools import chain
 from os import listdir
 from pathlib import Path
-from typing import Any, Dict, Final, List, Literal, Optional, Set, Tuple, Type
+from typing import Any, Dict, Final, Iterator, List, Literal, Optional, Set, Tuple, Type
 
 from click import Abort, secho
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
@@ -21,6 +21,7 @@ app = Typer()
 
 
 TEMPLATES_FOLDER: Final[Path] = Path(__file__).parent / "templates"
+LOGGER = logging.getLogger(__name__)
 
 
 class OutputFormat(Enum):
@@ -56,6 +57,18 @@ def is_typing_literal(field: FieldInfo) -> bool:
 
     # The class doesn't exist in Python 3.8 and below
     return field.annotation.__class__.__name__ == "_LiteralGenericAlias"
+
+
+def _model_fields(settings: Set[Type[BaseSettings]]) -> Iterator[Tuple[str, FieldInfo]]:
+    for cls in settings:
+        for field_name, model_field in cls.model_fields.items():
+            if model_field.validation_alias is not None:
+                if isinstance(model_field.validation_alias, str):
+                    yield model_field.validation_alias, model_field
+                else:
+                    LOGGER.error(f"Unsupported validation alias type '{type(model_field.validation_alias)}'.")
+            else:
+                yield field_name, model_field
 
 
 @app.command()
@@ -123,7 +136,7 @@ def generate(
         secho("No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)
         raise Abort()
 
-    fields: List[Tuple[str, FieldInfo]] = list(chain.from_iterable(list(cls.model_fields.items()) for cls in settings))
+    fields = list(_model_fields(settings))
     classes: Dict[Type[BaseSettings], List[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
 
     render_kwargs = {"heading_offset": heading_offset, "fields": fields, "classes": classes}
