@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Type
 
 import pytest
 from _pytest.logging import LogCaptureFixture
@@ -11,9 +11,10 @@ from tests.fixtures.invalid_settings import ExamplesNotIterableSettings
 from tests.fixtures.valid_settings import (
     SETTINGS_MARKDOWN_FIRST_LINE,
     EmptySettings,
+    ExamplesSettings,
     FullSettings,
-    LiteralSettings,
     MultipleSettings,
+    PossibleValuesSettings,
     RequiredSettings,
     ValidationAliasChoicesSettings,
     ValidationAliasPathSettings,
@@ -33,11 +34,6 @@ class TestMarkdownFormat:
             pytest.param(", default value: `some_value`\n\n", FullSettings, id="default value"),
             pytest.param("\n\nuse fullsettings like this\n\n", FullSettings, id="description"),
             pytest.param("\n\n## examples\n\n`aaa`, `bbb`\n\n", FullSettings, id="examples"),
-            pytest.param(
-                "\n\n## possible values\n\n`debug`, `info`\n\n",
-                LiteralSettings,
-                id="possible values",
-            ),
         ],
     )
     def should_generate(
@@ -47,6 +43,80 @@ class TestMarkdownFormat:
         settings_class: Type[BaseSettings],
     ):
         assert expected_string in run_app_with_settings(mocker, runner, settings_class)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "expected_name, expected_string, settings_class",
+        [
+            pytest.param("literal", "`debug`, `info`", PossibleValuesSettings, id="literal"),
+            pytest.param(
+                "simple",
+                "`debug`, `info`",
+                PossibleValuesSettings,
+                id="a list in json_schema_extra.possible_values",
+            ),
+            pytest.param(
+                "simple_tuple",
+                "- `debug`\n- `info`",
+                PossibleValuesSettings,
+                id="tuples with a single item in json_schema_extra.possible_values",
+            ),
+            pytest.param(
+                "tuple_with_explanation",
+                "- `debug`: debug level\n- `info`: info level",
+                PossibleValuesSettings,
+                id="tuples with two items in json_schema_extra.possible_values",
+            ),
+        ],
+    )
+    def should_generate_possible_values_from(
+        runner: CliRunner,
+        mocker: MockerFixture,
+        expected_name: str,
+        expected_string: str,
+        settings_class: Type[BaseSettings],
+    ):
+        assert (
+            f"# `{expected_name}`\n\n**required**\n\n## possible values\n\n{expected_string}\n\n"
+            in run_app_with_settings(mocker, runner, settings_class)
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "expected_name, expected_string, settings_class",
+        [
+            pytest.param("only_values", "`debug`, `info`", ExamplesSettings, id="examples attribute"),
+            pytest.param("structured_text", "debug, info", ExamplesSettings, id="str in json_schema_extra.examples"),
+            pytest.param(
+                "simple",
+                "`debug`, `info`",
+                ExamplesSettings,
+                id="a list in json_schema_extra.examples",
+            ),
+            pytest.param(
+                "simple_tuple",
+                "- `debug`\n- `info`",
+                ExamplesSettings,
+                id="tuples with a single item in json_schema_extra.examples",
+            ),
+            pytest.param(
+                "tuple_with_explanation",
+                "- `debug`: debug level\n- `info`: info level",
+                ExamplesSettings,
+                id="tuples with two items in json_schema_extra.examples",
+            ),
+        ],
+    )
+    def should_generate_example_from(
+        runner: CliRunner,
+        mocker: MockerFixture,
+        expected_name: str,
+        expected_string: str,
+        settings_class: Type[BaseSettings],
+    ):
+        assert f"# `{expected_name}`\n\n**required**\n\n## examples\n\n{expected_string}\n\n" in run_app_with_settings(
+            mocker, runner, settings_class
+        )
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -90,28 +160,6 @@ class TestMarkdownFormat:
         assert "\n\n`(1, 2, 3)`, `(4, 5, 6, 7)`\n\n" in stdout
 
     @staticmethod
-    @pytest.mark.parametrize(
-        "examples, expected_string",
-        [
-            pytest.param(
-                [("name1", "description1"), ("no_description_name",)],
-                "- `name1`: description1\n- `no_description_name`",
-                id="tuples of 1-2 items as values and optional descriptions",
-            ),
-        ],
-    )
-    def should_list_values_for(
-        runner: CliRunner,
-        mocker: MockerFixture,
-        examples: Any,
-        expected_string: str,
-    ):
-        class Settings(BaseSettings):
-            var: str = Field(..., examples=examples)
-
-        assert f"## examples\n\n{expected_string}\n\n" in run_app_with_settings(mocker, runner, Settings)
-
-    @staticmethod
     def should_not_show_missing_description_example_possible_and_default_values(
         runner: CliRunner, mocker: MockerFixture
     ):
@@ -124,7 +172,7 @@ class TestMarkdownFormat:
         assert expected_string in run_app_with_settings(mocker, runner, EmptySettings, ["--heading-offset", "1"])
 
     @staticmethod
-    def should_abort_when_examples_are_not_iterable(runner: CliRunner, mocker: MockerFixture):
+    def should_abort_when_examples_are_not_iterable_nor_string(runner: CliRunner, mocker: MockerFixture):
         stdout = run_app_with_settings(mocker, runner, ExamplesNotIterableSettings)
         assert "`examples` must be iterable" in stdout
         assert "`123456`" in stdout
