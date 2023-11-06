@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "settings-doc"
-version = "3.0.1"
+version = "3.1.0"
 description = "A command line tool for generating Markdown documentation and .env files from pydantic BaseSettings."
 authors = ["Radek Lát <radek.lat@gmail.com>"]
 license = "MIT License"

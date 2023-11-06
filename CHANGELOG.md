@@ -12,6 +12,27 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [3.1.0] - 2023-11-06
+
+### Features
+
+- Add back verbose `possible_values` removed in `3.0.0`. Since arbitrary `**extra` is no longer supported in `pydantic>=2.0`, the `possible_values` are now passed as `json_schema_extra={"possible_values": [...]}`. If both the field is type of `Literal` and `possible_values` is specified, `possible_values` will be used. It accepts:
+  - Plain list of values, e.g. `["foo", "bar"]`. This will be formatted either as a single line or an unordered list, depending on the length of the string. Example of the resulting Markdown:
+   ```text
+   `foo`, `bar`
+   ```
+  - List of tuples of a single item, e.g. `[("foo", ), ("bar", )]`. This will be formatted as an unordered list. Example of the resulting Markdown:
+    ```text
+    - `foo`
+    - `bar`
+    ```
+  - List of tuples or two items, e.g. `[("foo", "explanation of foo"), ("bar", "explanation of bar")]`. Example of the resulting Markdown:
+    ```text
+    - `foo`: explanation of foo
+    - `bar`: explanation of bar
+    ```
+- Adds more control over `examples` by moving them in `json_schema_extra["examples": ...]`. It accepts all the formats that `possible_values` accepts, plus a plain string, which won't be formatted on the output. If both `examples` and `json_schema_extra.examples` are present, `json_schema_extra.examples` will be used.
+
 ## [3.0.1] - 2023-11-01
 
 ### Fixes
@@ -140,7 +161,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.0.1...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.1.0...HEAD
+[3.1.0]: https://github.com/radeklat/settings-doc/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/radeklat/settings-doc/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/radeklat/settings-doc/compare/2.1.0...3.0.0
 [2.1.0]: https://github.com/radeklat/settings-doc/compare/2.0.0...2.1.0

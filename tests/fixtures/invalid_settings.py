@@ -3,4 +3,4 @@ from pydantic_settings import BaseSettings
 
 
 class ExamplesNotIterableSettings(BaseSettings):
-    logging_level: str = Field(..., examples=123456)  # type: ignore[arg-type]
+    logging_level: str = Field(..., json_schema_extra={"examples": 123456})

@@ -20,27 +20,25 @@
 
 {{ field.description }}
 {% endif %}
-    {% if field.examples %}
-        {% set display_values = field.examples %}
-        {% set values_section_name = "Examples" %}
+    {% if field.json_schema_extra and "possible_values" in field.json_schema_extra %}
+        {% set possible_values = field.json_schema_extra.possible_values %}
     {% elif is_typing_literal(field) %}
-        {% set display_values = field.annotation.__args__ %}
-        {% set values_section_name = "Possible values" %}
+        {% set possible_values = field.annotation.__args__ %}
     {% endif %}
-    {% if display_values %}
+    {% if possible_values %}
 
-{{ heading(2) }} {{ values_section_name }}
+{{ heading(2) }} Possible values
 
-        {% if not is_values_with_descriptions(display_values) %}
-            {% if display_values|join("`, `")|length + 2 <= 75 %}
-`{{ display_values|join("`, `") }}`
+        {% if not is_values_with_descriptions(possible_values) %}
+            {% if possible_values|join("`, `")|length + 2 <= 75 %}
+`{{ possible_values|join("`, `") }}`
             {% else %}
-                {% for value in display_values %}
+                {% for value in possible_values %}
 - `{{ value }}`
                 {% endfor %}
             {% endif %}
         {% else %}
-            {% for value in display_values %}
+            {% for value in possible_values %}
                 {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
                     {% if value|length == 2 %}
 - `{{ value[0] }}`: {{ value[1] }}
@@ -52,6 +50,48 @@
                 {% endif %}
             {% endfor %}
 
+        {% endif %}
+    {% endif %}
+    {% if field.json_schema_extra and "examples" in field.json_schema_extra %}
+{# `field.json_schema_extra.examples` has no pre-defined structure, so it is more flexible #}
+    {% set examples_values = field.json_schema_extra.examples %}
+
+{{ heading(2) }} Examples
+
+        {% if examples_values is string %}
+{{ examples_values }}
+        {% elif not is_values_with_descriptions(examples_values) %}
+            {% if examples_values|join("`, `")|length + 2 <= 75 %}
+`{{ examples_values|join("`, `") }}`
+            {% else %}
+                {% for value in examples_values %}
+- `{{ value }}`
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            {% for value in examples_values %}
+                {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
+                    {% if value|length == 2 %}
+- `{{ value[0] }}`: {{ value[1] }}
+                    {% else %}
+- `{{ value[0] }}`
+                    {% endif %}
+                {% else %}
+- `{{ value }}`
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% elif field.examples %}
+{# `field.examples` is limited to a list of only example values #}
+
+{{ heading(2) }} Examples
+
+        {% if field.examples|join("`, `")|length + 2 <= 75 %}
+`{{ field.examples|join("`, `") }}`
+        {% else %}
+            {% for value in field.examples %}
+- `{{ value }}`
+            {% endfor %}
         {% endif %}
     {% endif %}
 {% endfor %}

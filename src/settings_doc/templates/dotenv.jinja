@@ -15,6 +15,8 @@
         {% set possible_values = field.examples %}
     {% elif is_typing_literal(field) %}
         {% set possible_values = field.annotation.__args__ %}
+    {% elif field.json_schema_extra and "possible_values" in field.json_schema_extra %}
+        {% set possible_values = field.json_schema_extra.possible_values %}
     {% endif %}
     {% if possible_values %}
         {% set possible_values_line = "`" + possible_values|join("`, `") + "`" %}
