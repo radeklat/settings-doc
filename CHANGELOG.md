@@ -12,6 +12,14 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [3.1.2] - 2023-11-07
+
+### Fixes
+
+#### Markdown template
+
+- Swap `possible_values` and `examples` sections, so that `examples` are displayed before `possible_values`. This is the original display order from `2.x`.
+
 ## [3.1.1] - 2023-11-07
 
 ### Fixes
@@ -175,7 +183,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.1.1...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.1.2...HEAD
+[3.1.2]: https://github.com/radeklat/settings-doc/compare/3.1.1...3.1.2
 [3.1.1]: https://github.com/radeklat/settings-doc/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/radeklat/settings-doc/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/radeklat/settings-doc/compare/3.0.0...3.0.1

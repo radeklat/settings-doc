@@ -20,38 +20,6 @@
 
 {{ field.description }}
 {% endif %}
-    {# Possible values #}
-    {% if field.json_schema_extra and "possible_values" in field.json_schema_extra %}
-        {% set possible_values = field.json_schema_extra.possible_values %}
-    {% elif is_typing_literal(field) %}
-        {% set possible_values = field.annotation.__args__ %}
-    {% endif %}
-    {% if possible_values %}
-
-{{ heading(2) }} Possible values
-
-        {% if not is_values_with_descriptions(possible_values) %}
-            {% if possible_values|join("`, `")|length + 2 <= 75 %}
-`{{ possible_values|join("`, `") }}`
-            {% else %}
-                {% for value in possible_values %}
-- `{{ value }}`
-                {% endfor %}
-            {% endif %}
-        {% else %}
-            {% for value in possible_values %}
-                {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
-                    {% if value|length == 2 %}
-- `{{ value[0] }}`: {{ value[1] }}
-                    {% else %}
-- `{{ value[0] }}`
-                    {% endif %}
-                {% else %}
-- `{{ value }}`
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endif %}
     {# Example values #}
     {% if field.json_schema_extra and "examples" in field.json_schema_extra %}
     {# `field.json_schema_extra.examples` has no pre-defined structure, so it is more flexible #}
@@ -92,6 +60,38 @@
         {% else %}
             {% for value in field.examples %}
 - `{{ value }}`
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+    {# Possible values #}
+    {% if field.json_schema_extra and "possible_values" in field.json_schema_extra %}
+        {% set possible_values = field.json_schema_extra.possible_values %}
+    {% elif is_typing_literal(field) %}
+        {% set possible_values = field.annotation.__args__ %}
+    {% endif %}
+    {% if possible_values %}
+
+{{ heading(2) }} Possible values
+
+        {% if not is_values_with_descriptions(possible_values) %}
+            {% if possible_values|join("`, `")|length + 2 <= 75 %}
+`{{ possible_values|join("`, `") }}`
+            {% else %}
+                {% for value in possible_values %}
+- `{{ value }}`
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            {% for value in possible_values %}
+                {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
+                    {% if value|length == 2 %}
+- `{{ value[0] }}`: {{ value[1] }}
+                    {% else %}
+- `{{ value[0] }}`
+                    {% endif %}
+                {% else %}
+- `{{ value }}`
+                {% endif %}
             {% endfor %}
         {% endif %}
     {% endif %}

@@ -123,9 +123,9 @@ class TestMarkdownFormat:
         expected_string = (
             "# `possible_values_and_examples`\n\n"
             "**required**\n\n"
-            "## possible values\n\n"
-            "- `debug`: debug level\n- `info`: info level\n\n"
             "## examples\n\n"
+            "- `debug`: debug level\n- `info`: info level\n\n"
+            "## possible values\n\n"
             "- `debug`: debug level\n- `info`: info level\n\n"
         )
         assert expected_string in run_app_with_settings(mocker, runner, ExamplesSettings)
