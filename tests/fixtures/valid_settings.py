@@ -36,6 +36,13 @@ class ExamplesSettings(BaseSettings):
     tuple_with_explanation: str = Field(
         ..., json_schema_extra={"examples": [("debug", "Debug level"), ("info", "Info level")]}
     )
+    possible_values_and_examples: str = Field(
+        ...,
+        json_schema_extra={
+            "possible_values": [("debug", "Debug level"), ("info", "Info level")],
+            "examples": [("debug", "Debug level"), ("info", "Info level")],
+        },
+    )
 
 
 class RequiredSettings(BaseSettings):

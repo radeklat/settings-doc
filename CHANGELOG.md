@@ -12,6 +12,20 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [3.1.1] - 2023-11-07
+
+### Fixes
+
+#### Markdown template
+
+- Remove extra space between "Possible values" and "Examples" sections.
+
+#### DotEnv template
+
+- Fix wrapping of `possible_values`.
+- Fix displaying of `possible_values` for tuples.
+- Remove `None` as a default value.
+
 ## [3.1.0] - 2023-11-06
 
 ### Features
@@ -161,7 +175,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.1.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.1.1...HEAD
+[3.1.1]: https://github.com/radeklat/settings-doc/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/radeklat/settings-doc/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/radeklat/settings-doc/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/radeklat/settings-doc/compare/2.1.0...3.0.0
