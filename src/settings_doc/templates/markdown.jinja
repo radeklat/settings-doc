@@ -20,6 +20,7 @@
 
 {{ field.description }}
 {% endif %}
+    {# Possible values #}
     {% if field.json_schema_extra and "possible_values" in field.json_schema_extra %}
         {% set possible_values = field.json_schema_extra.possible_values %}
     {% elif is_typing_literal(field) %}
@@ -49,11 +50,11 @@
 - `{{ value }}`
                 {% endif %}
             {% endfor %}
-
         {% endif %}
     {% endif %}
+    {# Example values #}
     {% if field.json_schema_extra and "examples" in field.json_schema_extra %}
-{# `field.json_schema_extra.examples` has no pre-defined structure, so it is more flexible #}
+    {# `field.json_schema_extra.examples` has no pre-defined structure, so it is more flexible #}
     {% set examples_values = field.json_schema_extra.examples %}
 
 {{ heading(2) }} Examples
@@ -82,7 +83,7 @@
             {% endfor %}
         {% endif %}
     {% elif field.examples %}
-{# `field.examples` is limited to a list of only example values #}
+    {# `field.examples` is limited to a list of only example values #}
 
 {{ heading(2) }} Examples
 

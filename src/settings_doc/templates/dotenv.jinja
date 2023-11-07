@@ -11,18 +11,21 @@
     {% if field.description %}
 # {{ field.description|replace("\n", "\n# ") }}
     {% endif %}
-    {% if field.examples %}
-        {% set possible_values = field.examples %}
-    {% elif is_typing_literal(field) %}
+    {% if is_typing_literal(field) %}
         {% set possible_values = field.annotation.__args__ %}
     {% elif field.json_schema_extra and "possible_values" in field.json_schema_extra %}
         {% set possible_values = field.json_schema_extra.possible_values %}
     {% endif %}
     {% if possible_values %}
-        {% set possible_values_line = "`" + possible_values|join("`, `") + "`" %}
 # Possible values:
-        {% if possible_values_line|length <= 75 %}
-#   {{ possible_values_line }}
+        {% if not is_values_with_descriptions(possible_values) %}
+            {% if possible_values|join("`, `")|length + 6 <= 75 %}
+#   `{{ possible_values|join("`, `") }}`
+            {% else %}
+                {% for value in possible_values %}
+#   - `{{ value }}`
+                {% endfor %}
+            {% endif %}
         {% else %}
             {% for value in possible_values %}
                 {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
@@ -37,7 +40,7 @@
             {% endfor %}
         {% endif %}
     {% endif %}
-{% if not field.is_required() %}# {% endif %}{{ env_name|upper }}={% if has_default_value(field) %}{{ field.default }}{% endif %}
+{% if not field.is_required() %}# {% endif %}{{ env_name|upper }}={% if has_default_value(field) and field.default is not none %}{{ field.default }}{% endif %}
 
 
 {% endfor %}
