@@ -9,6 +9,7 @@ from settings_doc.importing import import_module_path
 from tests.fixtures.module_with_single_settings_class import SingleSettingsInModule
 from tests.fixtures.valid_settings import (
     EmptySettings,
+    EnvPrefixSettings,
     ExamplesSettings,
     FullSettings,
     MultipleSettings,
@@ -44,6 +45,7 @@ class TestImportModulePath:
                     ValidationAliasPathSettings,
                     ValidationAliasChoicesSettings,
                     ExamplesSettings,
+                    EnvPrefixSettings,
                 },
                 id="for a module with multiple matching classes",
             ),
@@ -60,6 +62,7 @@ class TestImportModulePath:
                     ValidationAliasPathSettings,
                     ValidationAliasChoicesSettings,
                     ExamplesSettings,
+                    EnvPrefixSettings,
                 },
                 id="for multiple modules with multiple matching classes",
             ),

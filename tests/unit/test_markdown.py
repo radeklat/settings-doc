@@ -11,6 +11,7 @@ from tests.fixtures.invalid_settings import ExamplesNotIterableSettings
 from tests.fixtures.valid_settings import (
     SETTINGS_MARKDOWN_FIRST_LINE,
     EmptySettings,
+    EnvPrefixSettings,
     ExamplesSettings,
     FullSettings,
     MultipleSettings,
@@ -199,3 +200,8 @@ class TestMarkdownFormat:
     def should_end_with_a_single_empty_line(runner: CliRunner, mocker: MockerFixture):
         stdout = run_app_with_settings(mocker, runner, MultipleSettings)
         assert not stdout.endswith("`\n\n"), f"'{stdout}' ends with empty line"
+
+    @staticmethod
+    def should_include_env_prefix(runner: CliRunner, mocker: MockerFixture):
+        expected_string = "# `prefix_logging_level`\n\n**required**\n\n"
+        assert run_app_with_settings(mocker, runner, EnvPrefixSettings) == expected_string
