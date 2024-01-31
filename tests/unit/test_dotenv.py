@@ -105,11 +105,11 @@ class TestDotEnvFormat:
             fits: str = Field(..., json_schema_extra={"possible_values": [a_value]})
             fits_not: str = Field(..., json_schema_extra={"possible_values": [b_value]})
             not_values_and_descriptions: str = Field(
-                ..., json_schema_extra={"possible_values": [(1, 2, 3), (4, 5, 6, 7)]}
+                ..., json_schema_extra={"possible_values": [[1, 2, 3], [4, 5, 6, 7]]}
             )
 
         stdout = run_app_with_settings(mocker, runner, Settings, fmt="dotenv")
 
         assert f"#   `{a_value}`\n" in stdout
         assert f"#   - `{b_value}`\n" in stdout
-        assert "#   `(1, 2, 3)`, `(4, 5, 6, 7)`\n" in stdout
+        assert "#   `[1, 2, 3]`, `[4, 5, 6, 7]`\n" in stdout

@@ -12,6 +12,28 @@ Types of changes are:
 
 ## [Unreleased]
 
+### Breaking changes
+
+- Values used for verbose "possible values" in `json_schema_extra={"possible_values": [...]}` must be `list[list[str]]` instead of previous `list[tuple[str, ...]]`. Using `tuple` results in failing type checks. Examples of valid values and their Markdown rendering:
+  - Plain list of values, e.g. `["foo", "bar"]`:
+   ```text
+   `foo`, `bar`
+   ```
+  - List of lists of a single item, e.g. `[["foo"], ["bar"]]`:
+    ```text
+    - `foo`
+    - `bar`
+    ```
+  - List of lists of two items, e.g. `[["foo", "explanation of foo"], ["bar", "explanation of bar"]]`:
+    ```text
+    - `foo`: explanation of foo
+    - `bar`: explanation of bar
+    ```
+    
+### Fixes
+
+- Dependencies update
+
 ## [3.1.2] - 2023-11-07
 
 ### Fixes
@@ -48,7 +70,7 @@ Types of changes are:
     - `foo`
     - `bar`
     ```
-  - List of tuples or two items, e.g. `[("foo", "explanation of foo"), ("bar", "explanation of bar")]`. Example of the resulting Markdown:
+  - List of tuples of two items, e.g. `[("foo", "explanation of foo"), ("bar", "explanation of bar")]`. Example of the resulting Markdown:
     ```text
     - `foo`: explanation of foo
     - `bar`: explanation of bar

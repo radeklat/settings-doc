@@ -47,7 +47,7 @@ jobs: # A basic unit of work in a run
           command: << pipeline.parameters.command_prefix >> format --check
       - run:
           name: Type check
-          command: << pipeline.parameters.command_prefix >> typecheck
+          command: << pipeline.parameters.command_prefix >> mypy
       - run:
           name: Linters
           command: << pipeline.parameters.command_prefix >> lint
@@ -57,10 +57,10 @@ jobs: # A basic unit of work in a run
             - ".venv"
       - run:
           name: Unit tests
-          command: << pipeline.parameters.command_prefix >> test-unit
+          command: << pipeline.parameters.command_prefix >> pytest-unit
       - run:
           name: Integration tests
-          command: << pipeline.parameters.command_prefix >> test-integration
+          command: << pipeline.parameters.command_prefix >> pytest-integration
       - run:
           name: Build coverage report
           command: << pipeline.parameters.command_prefix >> coverage-report

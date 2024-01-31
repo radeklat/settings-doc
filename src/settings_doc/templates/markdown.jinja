@@ -39,7 +39,7 @@
             {% endif %}
         {% else %}
             {% for value in examples_values %}
-                {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
+                {% if value.__class__.__name__ == "list" and value|length <= 2 %}
                     {% if value|length == 2 %}
 - `{{ value[0] }}`: {{ value[1] }}
                     {% else %}
@@ -83,7 +83,7 @@
             {% endif %}
         {% else %}
             {% for value in possible_values %}
-                {% if value.__class__.__name__ == "tuple" and value|length <= 2 %}
+                {% if value.__class__.__name__ == "list" and value|length <= 2 %}
                     {% if value|length == 2 %}
 - `{{ value[0] }}`: {{ value[1] }}
                     {% else %}

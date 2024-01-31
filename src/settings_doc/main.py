@@ -40,7 +40,7 @@ def is_values_with_descriptions(value: Any) -> bool:
         secho(f"`examples` must be iterable but `{value}` used.", fg=colors.RED)
         raise Abort()
 
-    return all(list(map(lambda item: isinstance(item, tuple) and 2 >= len(item) >= 1, value)))
+    return all(list(map(lambda item: isinstance(item, list) and 2 >= len(item) >= 1, value)))
 
 
 def has_default_value(field: FieldInfo) -> bool:
