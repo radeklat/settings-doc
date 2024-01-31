@@ -11,6 +11,8 @@ from tests.fixtures.invalid_settings import ExamplesNotIterableSettings
 from tests.fixtures.valid_settings import (
     SETTINGS_MARKDOWN_FIRST_LINE,
     EmptySettings,
+    EnvNestedDelimiterSettings,
+    EnvPrefixAndNestedDelimiterSettings,
     EnvPrefixSettings,
     ExamplesSettings,
     FullSettings,
@@ -202,6 +204,22 @@ class TestMarkdownFormat:
         assert not stdout.endswith("`\n\n"), f"'{stdout}' ends with empty line"
 
     @staticmethod
-    def should_include_env_prefix(runner: CliRunner, mocker: MockerFixture):
+    def should_show_env_prefix(runner: CliRunner, mocker: MockerFixture):
         expected_string = "# `prefix_logging_level`\n\n**required**\n\n"
         assert run_app_with_settings(mocker, runner, EnvPrefixSettings) == expected_string
+
+    @staticmethod
+    def should_generate_env_nested_delimiter(runner: CliRunner, mocker: MockerFixture):
+        actual_string = run_app_with_settings(mocker, runner, EnvNestedDelimiterSettings)
+
+        assert "`direct`" in actual_string
+        assert "`sub_model__nested`" in actual_string
+        assert "`sub_model__deep__leaf`" in actual_string
+
+    @staticmethod
+    def should_generate_env_prefix_and_nested_delimiter(runner: CliRunner, mocker: MockerFixture):
+        actual_string = run_app_with_settings(mocker, runner, EnvPrefixAndNestedDelimiterSettings)
+
+        assert "`prefix_direct`" in actual_string
+        assert "`prefix_sub_model__nested`" in actual_string
+        assert "`prefix_sub_model__deep__leaf`" in actual_string

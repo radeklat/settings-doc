@@ -9,6 +9,9 @@ from typer.testing import CliRunner
 
 from tests.fixtures.valid_settings import (
     SETTINGS_ATTR,
+    EnvNestedDelimiterSettings,
+    EnvPrefixAndNestedDelimiterSettings,
+    EnvPrefixSettings,
     ExamplesSettings,
     FullSettings,
     PossibleValuesSettings,
@@ -113,3 +116,23 @@ class TestDotEnvFormat:
         assert f"#   `{a_value}`\n" in stdout
         assert f"#   - `{b_value}`\n" in stdout
         assert "#   `[1, 2, 3]`, `[4, 5, 6, 7]`\n" in stdout
+
+    @staticmethod
+    def should_show_env_prefix(runner: CliRunner, mocker: MockerFixture):
+        assert "prefix_logging_level=" in run_app_with_settings(mocker, runner, EnvPrefixSettings, fmt="dotenv")
+
+    @staticmethod
+    def should_generate_env_nested_delimiter(runner: CliRunner, mocker: MockerFixture):
+        actual_string = run_app_with_settings(mocker, runner, EnvNestedDelimiterSettings, fmt="dotenv")
+
+        assert "direct=" in actual_string
+        assert "sub_model__nested=" in actual_string
+        assert "sub_model__deep__leaf=" in actual_string
+
+    @staticmethod
+    def should_generate_env_prefix_and_nested_delimiter(runner: CliRunner, mocker: MockerFixture):
+        actual_string = run_app_with_settings(mocker, runner, EnvPrefixAndNestedDelimiterSettings, fmt="dotenv")
+
+        assert "prefix_direct=" in actual_string
+        assert "prefix_sub_model__nested=" in actual_string
+        assert "prefix_sub_model__deep__leaf=" in actual_string

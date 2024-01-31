@@ -1,3 +1,4 @@
+import itertools
 import logging
 import re
 import shutil
@@ -59,16 +60,32 @@ def is_typing_literal(field: FieldInfo) -> bool:
     return field.annotation.__class__.__name__ == "_LiteralGenericAlias"
 
 
-def _model_fields(settings: Set[Type[BaseSettings]]) -> Iterator[Tuple[str, FieldInfo]]:
-    for cls in settings:
-        for field_name, model_field in cls.model_fields.items():
-            if model_field.validation_alias is not None:
-                if isinstance(model_field.validation_alias, str):
-                    yield model_field.validation_alias, model_field
-                else:
-                    LOGGER.error(f"Unsupported validation alias type '{type(model_field.validation_alias)}'.")
+def _model_fields_recursive(
+    cls: Type[BaseSettings], prefix: str, env_nested_delimiter: Optional[str]
+) -> Iterator[Tuple[str, FieldInfo]]:
+    for field_name, model_field in cls.model_fields.items():
+        if model_field.validation_alias is not None:
+            if isinstance(model_field.validation_alias, str):
+                yield model_field.validation_alias, model_field
             else:
-                yield cls.model_config["env_prefix"] + field_name, model_field
+                LOGGER.error(f"Unsupported validation alias type '{type(model_field.validation_alias)}'.")
+        elif (
+            model_field.annotation is not None
+            and hasattr(model_field.annotation, "model_fields")
+            and env_nested_delimiter is not None
+        ):
+            # There are nested fields and they can be joined by a delimiter. Generate variable names recursively.
+            yield from _model_fields_recursive(
+                model_field.annotation,
+                prefix + field_name + env_nested_delimiter,
+                env_nested_delimiter,
+            )
+        else:
+            yield prefix + field_name, model_field
+
+
+def _model_fields(cls: Type[BaseSettings]) -> Iterator[Tuple[str, FieldInfo]]:
+    yield from _model_fields_recursive(cls, cls.model_config["env_prefix"], cls.model_config["env_nested_delimiter"])
 
 
 @app.command()
@@ -136,7 +153,7 @@ def generate(
         secho("No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)
         raise Abort()
 
-    fields = list(_model_fields(settings))
+    fields = itertools.chain.from_iterable(_model_fields(cls) for cls in settings)
     classes: Dict[Type[BaseSettings], List[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
 
     render_kwargs = {"heading_offset": heading_offset, "fields": fields, "classes": classes}

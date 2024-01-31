@@ -9,6 +9,8 @@ from settings_doc.importing import import_module_path
 from tests.fixtures.module_with_single_settings_class import SingleSettingsInModule
 from tests.fixtures.valid_settings import (
     EmptySettings,
+    EnvNestedDelimiterSettings,
+    EnvPrefixAndNestedDelimiterSettings,
     EnvPrefixSettings,
     ExamplesSettings,
     FullSettings,
@@ -46,6 +48,8 @@ class TestImportModulePath:
                     ValidationAliasChoicesSettings,
                     ExamplesSettings,
                     EnvPrefixSettings,
+                    EnvNestedDelimiterSettings,
+                    EnvPrefixAndNestedDelimiterSettings,
                 },
                 id="for a module with multiple matching classes",
             ),
@@ -63,6 +67,8 @@ class TestImportModulePath:
                     ValidationAliasChoicesSettings,
                     ExamplesSettings,
                     EnvPrefixSettings,
+                    EnvNestedDelimiterSettings,
+                    EnvPrefixAndNestedDelimiterSettings,
                 },
                 id="for multiple modules with multiple matching classes",
             ),
