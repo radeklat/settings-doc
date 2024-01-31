@@ -68,7 +68,7 @@ def _model_fields(settings: Set[Type[BaseSettings]]) -> Iterator[Tuple[str, Fiel
                 else:
                     LOGGER.error(f"Unsupported validation alias type '{type(model_field.validation_alias)}'.")
             else:
-                yield field_name, model_field
+                yield cls.model_config["env_prefix"] + field_name, model_field
 
 
 @app.command()

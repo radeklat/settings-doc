@@ -1,7 +1,7 @@
 from typing import Literal
 
 from pydantic import AliasChoices, AliasPath, Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 SETTINGS_ATTR = "logging_level"
 SETTINGS_MARKDOWN_FIRST_LINE = f"# `{SETTINGS_ATTR}`\n"
@@ -64,3 +64,9 @@ class ValidationAliasPathSettings(BaseSettings):
 
 class ValidationAliasChoicesSettings(BaseSettings):
     logging_level: str = Field(..., validation_alias=AliasChoices("logging", "level"))
+
+
+class EnvPrefixSettings(BaseSettings):
+    logging_level: str
+
+    model_config = SettingsConfigDict(env_prefix="PREFIX_")
