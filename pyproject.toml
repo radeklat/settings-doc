@@ -45,7 +45,7 @@ pydantic-settings = "^2.0.3"
 [tool.poetry.dev-dependencies]
 click = "^8.0.3"
 types-toml = "*"
-delfino-core = {extras = ["verify_all", "dependencies-update"], version = "^6.0"}
+delfino-core = {extras = ["verify", "dependencies-update"], version = "^7.0"}  # https://github.com/radeklat/delfino-core/blob/main/CHANGELOG.md
 pytest-mock = "^3.6.1"
 
 [tool.poetry.group.dev.dependencies]
