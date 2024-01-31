@@ -29,6 +29,11 @@ Types of changes are:
     - `foo`: explanation of foo
     - `bar`: explanation of bar
     ```
+
+### Features
+
+- Added rendering of `env_prefix` from `pydantic_settings.SettingsConfigDict` by @dekkers in #29.
+- Added rendering of `env_nested_delimiter` from `pydantic_settings.SettingsConfigDict`.
     
 ### Fixes
 

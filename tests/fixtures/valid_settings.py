@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import AliasChoices, AliasPath, Field
+from pydantic import AliasChoices, AliasPath, BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 SETTINGS_ATTR = "logging_level"
@@ -70,3 +70,40 @@ class EnvPrefixSettings(BaseSettings):
     logging_level: str
 
     model_config = SettingsConfigDict(env_prefix="PREFIX_")
+
+
+class DeepSubModel(BaseModel):
+    leaf: str
+
+
+class SubModel(BaseModel):
+    nested: str
+    deep: DeepSubModel
+
+
+class EnvNestedDelimiterSettings(BaseSettings):
+    """Expected environment variables.
+
+    - `DIRECT`
+    - `SUB_MODEL__NESTED`
+    - `SUB_MODEL__DEEP__LEAF`
+    """
+
+    model_config = SettingsConfigDict(env_nested_delimiter="__")
+
+    direct: str
+    sub_model: SubModel
+
+
+class EnvPrefixAndNestedDelimiterSettings(BaseSettings):
+    """Expected environment variables.
+
+    - `PREFIX_DIRECT`
+    - `PREFIX_SUB_MODEL__NESTED`
+    - `PREFIX_SUB_MODEL__DEEP__LEAF`
+    """
+
+    model_config = SettingsConfigDict(env_prefix="PREFIX_", env_nested_delimiter="__")
+
+    direct: str
+    sub_model: SubModel
