@@ -12,6 +12,8 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [4.0.0] - 2024-01-31
+
 ### Breaking changes
 
 - Values used for verbose "possible values" in `json_schema_extra={"possible_values": [...]}` must be `list[list[str]]` instead of previous `list[tuple[str, ...]]`. Using `tuple` results in failing type checks. Examples of valid values and their Markdown rendering:
@@ -210,7 +212,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/3.1.2...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/radeklat/settings-doc/compare/3.1.2...4.0.0
 [3.1.2]: https://github.com/radeklat/settings-doc/compare/3.1.1...3.1.2
 [3.1.1]: https://github.com/radeklat/settings-doc/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/radeklat/settings-doc/compare/3.0.1...3.1.0
