@@ -1,5 +1,5 @@
 <h1 align="center" style="border-bottom: none;">⚙&nbsp;📝&nbsp;&nbsp;Settings&nbsp;Doc&nbsp;&nbsp;📝&nbsp;⚙</h1>
-<h3 align="center">A command line tool for generating Markdown documentation and .env files from <a href="https://pydantic-docs.helpmanual.io/usage/settings">pydantic.BaseSettings</a>.</h3>
+<h3 align="center">A command line tool for generating Markdown documentation and .env files from <a href="">pydantic_settings.BaseSettings</a>.</h3>
 
 <p align="center">
     <a href="https://app.circleci.com/pipelines/github/radeklat/settings-doc?branch=main">
@@ -29,7 +29,7 @@
     </a>
 </p>
 
-The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic_settings.BaseSettings`](https://docs.pydantic.dev/latest/usage/pydantic_settings/).
+The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic_settings.BaseSettings`](https://docs.pydantic.dev/latest/api/pydantic_settings/).
 
 It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) templating engine and [Typer](https://typer.tiangolo.com/) framework. If you don't like the built-in templates, you can easily modify them or write completely custom ones. All attributes of the [`BaseSettings`](https://docs.pydantic.dev/latest/usage/pydantic_settings/) models are exposed to the templates.
 
