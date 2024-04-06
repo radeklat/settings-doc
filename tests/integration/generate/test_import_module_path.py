@@ -1,4 +1,4 @@
-from typing import Set, Tuple, Type
+from typing import Dict, Tuple, Type
 
 import pytest
 from _pytest.capture import CaptureFixture
@@ -32,43 +32,43 @@ class TestImportModulePath:
         [
             pytest.param(
                 ("module_with_single_settings_class",),
-                {SingleSettingsInModule},
+                {SingleSettingsInModule: None},
                 id="for a module with a single matching class",
             ),
             pytest.param(
                 ("valid_settings",),
                 {
-                    EmptySettings,
-                    FullSettings,
-                    PossibleValuesSettings,
-                    RequiredSettings,
-                    MultipleSettings,
-                    ValidationAliasSettings,
-                    ValidationAliasPathSettings,
-                    ValidationAliasChoicesSettings,
-                    ExamplesSettings,
-                    EnvPrefixSettings,
-                    EnvNestedDelimiterSettings,
-                    EnvPrefixAndNestedDelimiterSettings,
+                    EmptySettings: None,
+                    FullSettings: None,
+                    PossibleValuesSettings: None,
+                    RequiredSettings: None,
+                    MultipleSettings: None,
+                    ValidationAliasSettings: None,
+                    ValidationAliasPathSettings: None,
+                    ValidationAliasChoicesSettings: None,
+                    ExamplesSettings: None,
+                    EnvPrefixSettings: None,
+                    EnvNestedDelimiterSettings: None,
+                    EnvPrefixAndNestedDelimiterSettings: None,
                 },
                 id="for a module with multiple matching classes",
             ),
             pytest.param(
                 ("valid_settings", "module_with_single_settings_class"),
                 {
-                    EmptySettings,
-                    FullSettings,
-                    PossibleValuesSettings,
-                    RequiredSettings,
-                    SingleSettingsInModule,
-                    MultipleSettings,
-                    ValidationAliasSettings,
-                    ValidationAliasPathSettings,
-                    ValidationAliasChoicesSettings,
-                    ExamplesSettings,
-                    EnvPrefixSettings,
-                    EnvNestedDelimiterSettings,
-                    EnvPrefixAndNestedDelimiterSettings,
+                    EmptySettings: None,
+                    FullSettings: None,
+                    PossibleValuesSettings: None,
+                    RequiredSettings: None,
+                    SingleSettingsInModule: None,
+                    MultipleSettings: None,
+                    ValidationAliasSettings: None,
+                    ValidationAliasPathSettings: None,
+                    ValidationAliasChoicesSettings: None,
+                    ExamplesSettings: None,
+                    EnvPrefixSettings: None,
+                    EnvNestedDelimiterSettings: None,
+                    EnvPrefixAndNestedDelimiterSettings: None,
                 },
                 id="for multiple modules with multiple matching classes",
             ),
@@ -76,7 +76,7 @@ class TestImportModulePath:
     )
     def should_return_base_settings_classes(
         module_paths: Tuple[str, ...],
-        expected_classes: Set[Type[BaseSettings]],
+        expected_classes: Dict[Type[BaseSettings], None],
         capsys: CaptureFixture,
     ):
         classes = import_module_path(tuple(f"tests.fixtures.{module_path}" for module_path in module_paths))
@@ -124,5 +124,5 @@ class TestImportModulePath:
             "tests.fixtures.module_with_single_settings_class",
         )
         classes = import_module_path(class_paths)
-        assert classes == {SingleSettingsInModule}
+        assert classes == {SingleSettingsInModule: None}
         assert error_msg in capsys.readouterr().err

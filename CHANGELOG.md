@@ -12,6 +12,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [4.0.1] - 2024-04-06
+
+### Fixes
+
+- Unstable ordering of discovered settings classes (fixes #34).
+
 ## [4.0.0] - 2024-01-31
 
 ### Breaking changes
@@ -212,7 +218,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.0.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.0.1...HEAD
+[4.0.1]: https://github.com/radeklat/settings-doc/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/radeklat/settings-doc/compare/3.1.2...4.0.0
 [3.1.2]: https://github.com/radeklat/settings-doc/compare/3.1.1...3.1.2
 [3.1.1]: https://github.com/radeklat/settings-doc/compare/3.1.0...3.1.1

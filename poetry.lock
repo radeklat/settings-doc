@@ -965,6 +965,23 @@ files = [
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-kacl"
+version = "0.4.6"
+description = "Python module and CLI tool for validating and modifying Changelogs in \"keep-a-changelog\" format\""
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "python-kacl-0.4.6.tar.gz", hash = "sha256:01b85a307d063f53a0dd0c556f4ca32b284e6a28ba5b0824e0b8d9108df23a09"},
+    {file = "python_kacl-0.4.6-py3-none-any.whl", hash = "sha256:630bdde1b0d23817717b877eddfeb2eacd4889f54e9a39164180f29769a9c7c8"},
+]
+
+[package.dependencies]
+click = "*"
+gitpython = "*"
+pyyaml = "*"
+semver = "*"
+
+[[package]]
 name = "pyupgrade"
 version = "3.15.0"
 description = "A tool to automatically upgrade syntax for newer versions."
@@ -1080,6 +1097,17 @@ files = [
     {file = "ruff-0.1.15-py3-none-win_amd64.whl", hash = "sha256:3837ac73d869efc4182d9036b1405ef4c73d9b1f88da2413875e34e0d6919587"},
     {file = "ruff-0.1.15-py3-none-win_arm64.whl", hash = "sha256:9a933dfb1c14ec7a33cceb1e49ec4a16b51ce3c20fd42663198746efc0427360"},
     {file = "ruff-0.1.15.tar.gz", hash = "sha256:f6dfa8c1b21c913c326919056c390966648b680966febcb796cc9d1aaab8564e"},
+]
+
+[[package]]
+name = "semver"
+version = "3.0.2"
+description = "Python helper for Semantic Versioning (https://semver.org)"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "semver-3.0.2-py3-none-any.whl", hash = "sha256:b1ea4686fe70b981f85359eda33199d60c53964284e0cfb4977d243e37cf4bf4"},
+    {file = "semver-3.0.2.tar.gz", hash = "sha256:6253adb39c70f6e51afed2fa7152bcd414c411286088fb4b9effb133885ab4cc"},
 ]
 
 [[package]]
@@ -1259,4 +1287,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "c80862e6e954354cbb18aaa4b89cf55de0fd1c8bd539b1191a6f0a32a02bd090"
+content-hash = "03f29fc1994dd31f51717588a4a15eb3ae533cb5699ff533a9c62ba65873572e"

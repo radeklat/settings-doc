@@ -1,7 +1,7 @@
 import importlib
 from functools import lru_cache
 from inspect import isclass
-from typing import List, Set, Tuple, Type
+from typing import Dict, List, Tuple, Type
 
 from click import BadParameter, secho
 from pydantic_settings import BaseSettings
@@ -12,11 +12,11 @@ _RELATIVE_IMPORT_ERROR_MSG = "Relative imports are not supported."
 
 
 @lru_cache
-def import_module_path(module_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]:
+def import_module_path(module_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings], None]:
     if not module_paths:
-        return set()
+        return {}
 
-    settings: Set[Type[BaseSettings]] = set()
+    settings: Dict[Type[BaseSettings], None] = {}
 
     for module_path in module_paths:
         try:
@@ -27,8 +27,8 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]
                 cause = _RELATIVE_IMPORT_ERROR_MSG
             raise BadParameter(f"Cannot read the module: {cause}") from exc
 
-        new_classes: Set[Type[BaseSettings]] = {
-            obj
+        new_classes: Dict[Type[BaseSettings], None] = {
+            obj: None
             for obj in vars(module).values()
             if isclass(obj) and issubclass(obj, BaseSettings) and obj.__module__.startswith(module_path)
         }
@@ -50,8 +50,8 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]
 
 
 @lru_cache
-def import_class_path(class_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]:
-    settings: Set[Type[BaseSettings]] = set()
+def import_class_path(class_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings], None]:
+    settings: Dict[Type[BaseSettings], None] = {}
 
     for class_path in class_paths:
         module, class_name = class_path.rsplit(".", maxsplit=1)
@@ -69,7 +69,7 @@ def import_class_path(class_paths: Tuple[str, ...]) -> Set[Type[BaseSettings]]:
         if not issubclass(new_class, BaseSettings):
             raise BadParameter(f"Target class must be a subclass of BaseSettings but '{new_class.__name__}' found.")
 
-        settings.add(new_class)
+        settings[new_class] = None
 
     return settings
 

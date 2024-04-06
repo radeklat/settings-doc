@@ -1,4 +1,4 @@
-from typing import List, Set, Type
+from typing import Dict, List, Type
 
 import pytest
 from click import BadParameter
@@ -15,15 +15,15 @@ class TestImportClassPath:
     @pytest.mark.parametrize(
         "class_paths, expected_classes",
         [
-            pytest.param(["EmptySettings"], {EmptySettings}, id="single class when single option is given"),
+            pytest.param(["EmptySettings"], {EmptySettings: None}, id="single class when single option is given"),
             pytest.param(
                 ["EmptySettings", "FullSettings"],
-                {EmptySettings, FullSettings},
+                {EmptySettings: None, FullSettings: None},
                 id="multiple classes when multiple options are given",
             ),
         ],
     )
-    def should_return(class_paths: List[str], expected_classes: Set[Type[BaseSettings]]):
+    def should_return(class_paths: List[str], expected_classes: Dict[Type[BaseSettings], None]):
         classes = import_class_path(tuple(f"tests.fixtures.valid_settings.{class_path}" for class_path in class_paths))
         assert classes == expected_classes
 
