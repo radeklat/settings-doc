@@ -7,7 +7,7 @@ from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
 from os import listdir
 from pathlib import Path
-from typing import Any, Dict, Final, Iterator, List, Literal, Optional, Set, Tuple, Type
+from typing import Any, Dict, Final, Iterator, List, Literal, Optional, Tuple, Type
 
 from click import Abort, secho
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
@@ -145,9 +145,8 @@ def generate(
     ),
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""
-    settings: Set[Type[BaseSettings]] = importing.import_class_path(tuple(class_path)).union(
-        importing.import_module_path(tuple(module_path))
-    )
+    settings: Dict[Type[BaseSettings], None] = importing.import_class_path(tuple(class_path))
+    settings.update(importing.import_module_path(tuple(module_path)))
 
     if not settings:
         secho("No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)

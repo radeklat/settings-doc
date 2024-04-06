@@ -43,9 +43,11 @@ def run_app_with_settings(
     if args is None:
         args = []
     if not isinstance(settings, IterableCollection):
-        settings = {settings}
+        settings = [settings]
 
-    mocker.patch("settings_doc.importing.import_class_path", return_value=set(settings))
+    settings = {_: None for _ in settings}
+
+    mocker.patch("settings_doc.importing.import_class_path", return_value=settings)
     result = runner.invoke(
         app, ["generate", "--class", "THIS_SHOULD_NOT_BE_USED", "--output-format", fmt] + args, catch_exceptions=False
     )
