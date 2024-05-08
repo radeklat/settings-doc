@@ -123,7 +123,7 @@ class AppSettings(BaseSettings):
     logging_level: str = Field(
         "WARNING",
         description="Log level.",
-        examples=("WARNING",),
+        examples=["WARNING"],
         possible_values=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
     )
 ```
