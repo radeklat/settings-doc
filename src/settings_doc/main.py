@@ -5,6 +5,7 @@ import shutil
 import sys
 from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
+from inspect import isclass
 from os import listdir
 from pathlib import Path
 from typing import Any, Dict, Final, Iterator, List, Literal, Optional, Tuple, Type
@@ -79,6 +80,18 @@ def _model_fields_recursive(
                 model_field.annotation,
                 prefix + field_name + env_nested_delimiter,
                 env_nested_delimiter,
+            )
+        elif isclass(model_field.annotation) and issubclass(model_field.annotation, BaseSettings):
+            # There are nested fields that do not require a delimiter to be joined. Generate variable names recursively.
+            submodel_prefix = model_field.annotation.model_config.get("env_prefix", "")
+
+            if not submodel_prefix:
+                submodel_prefix = prefix + field_name + "_"
+
+            yield from _model_fields_recursive(
+                model_field.annotation,
+                submodel_prefix,
+                model_field.annotation.model_config.get("env_nested_delimiter", None),
             )
         else:
             yield prefix + field_name, model_field
