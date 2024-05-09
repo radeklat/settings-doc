@@ -2,6 +2,7 @@ from typing import Literal
 
 from pydantic import AliasChoices, AliasPath, BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing_extensions import Annotated
 
 SETTINGS_ATTR = "logging_level"
 SETTINGS_MARKDOWN_FIRST_LINE = f"# `{SETTINGS_ATTR}`\n"
@@ -107,3 +108,42 @@ class EnvPrefixAndNestedDelimiterSettings(BaseSettings):
 
     direct: str
     sub_model: SubModel
+
+
+class SimpleSubModel(BaseModel):
+    leaf: str
+
+
+class SettingsSubModelWithSubModel(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="PREFIX_SUB_MODEL_", env_nested_delimiter="__")
+
+    nested: str
+    sub_model_2: SimpleSubModel
+
+
+class SettingsWithSettingsSubModel(BaseSettings):
+    """Expected environment variables.
+
+    - `PREFIX_DIRECT`
+    - `PREFIX_SUB_MODEL_NESTED`
+    - `PREFIX_SUB_MODEL_SUB_MODEL_2__LEAF`
+    """
+
+    model_config = SettingsConfigDict(env_prefix="PREFIX_")
+
+    direct: str
+    sub_model_1: Annotated[SettingsSubModelWithSubModel, Field(default_factory=SettingsSubModelWithSubModel)]
+
+
+class SettingsSubModel(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="")
+    leaf: str
+
+
+class SettingsWithSettingsSubModelNoPrefixOrDelimiter(BaseSettings):
+    """Expected environment variables.
+
+    - `EMPTY_LOGGING_LEVEL`
+    """
+
+    my_leaf: SettingsSubModel

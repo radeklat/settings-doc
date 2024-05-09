@@ -20,6 +20,8 @@ from tests.fixtures.valid_settings import (
     MultipleSettings,
     PossibleValuesSettings,
     RequiredSettings,
+    SettingsWithSettingsSubModel,
+    SettingsWithSettingsSubModelNoPrefixOrDelimiter,
     ValidationAliasChoicesSettings,
     ValidationAliasPathSettings,
     ValidationAliasSettings,
@@ -224,6 +226,22 @@ class TestMarkdownFormat:
         assert "`prefix_direct`" in actual_string
         assert "`prefix_sub_model__nested`" in actual_string
         assert "`prefix_sub_model__deep__leaf`" in actual_string
+
+    @staticmethod
+    def should_generate_settings_with_settings_sub_model(runner: CliRunner, mocker: MockerFixture):
+        actual_string = run_app_with_settings(mocker, runner, SettingsWithSettingsSubModel)
+
+        assert "`prefix_direct`" in actual_string
+        assert "`prefix_sub_model_nested`" in actual_string
+        assert "`prefix_sub_model_sub_model_2__leaf`" in actual_string
+
+    @staticmethod
+    def should_generate_settings_with_settings_sub_model_no_prefix_or_delimiter(
+        runner: CliRunner, mocker: MockerFixture
+    ):
+        actual_string = run_app_with_settings(mocker, runner, SettingsWithSettingsSubModelNoPrefixOrDelimiter)
+
+        assert "`my_leaf_leaf`" in actual_string
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="StrEnum is not available in Python 3.10 and below")
