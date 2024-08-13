@@ -47,6 +47,7 @@ It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) temp
   - [Adding more information](#adding-more-information)
   - [Updating existing documentation](#updating-existing-documentation)
 - [Advanced usage](#advanced-usage)
+  - [Rendering documentation in code](#rendering-documentation-in-code)
   - [Custom templates](#custom-templates)
   - [Custom settings attributes in templates](#custom-settings-attributes-in-templates)
   - [As a pre-commit hook](#as-a-pre-commit-hook)
