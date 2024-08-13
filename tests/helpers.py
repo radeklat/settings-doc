@@ -1,5 +1,5 @@
 from collections.abc import Iterable as IterableCollection
-from typing import Iterable, List, Optional, Type, Union
+from typing import Iterable, List, Literal, Optional, Type, Union
 
 from click.testing import Result
 from jinja2 import Environment, Template
@@ -8,6 +8,30 @@ from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
 from settings_doc.main import app
+
+
+def _mock_import_path(
+    path_type: Literal["class", "module"],
+    mocker: MockerFixture,
+    settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]],
+) -> None:
+    if not isinstance(settings, IterableCollection):
+        settings = [settings]
+
+    settings = {_: None for _ in settings}
+    mocker.patch(f"settings_doc.importing.import_{path_type}_path", return_value=settings)
+
+
+def mock_import_class_path(
+    mocker: MockerFixture, settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]]
+) -> None:
+    _mock_import_path("class", mocker, settings)
+
+
+def mock_import_module_path(
+    mocker: MockerFixture, settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]]
+) -> None:
+    _mock_import_path("module", mocker, settings)
 
 
 def run_app_with_settings(
@@ -42,12 +66,9 @@ def run_app_with_settings(
 
     if args is None:
         args = []
-    if not isinstance(settings, IterableCollection):
-        settings = [settings]
 
-    settings = {_: None for _ in settings}
+    mock_import_class_path(mocker, settings)
 
-    mocker.patch("settings_doc.importing.import_class_path", return_value=settings)
     result = runner.invoke(
         app, ["generate", "--class", "THIS_SHOULD_NOT_BE_USED", "--output-format", fmt] + args, catch_exceptions=False
     )

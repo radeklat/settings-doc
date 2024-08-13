@@ -1,5 +1,5 @@
 <h1 align="center" style="border-bottom: none;">⚙&nbsp;📝&nbsp;&nbsp;Settings&nbsp;Doc&nbsp;&nbsp;📝&nbsp;⚙</h1>
-<h3 align="center">A command line tool for generating Markdown documentation and .env files from <a href="">pydantic_settings.BaseSettings</a>.</h3>
+<h3 align="center">A (command line) tool for generating Markdown documentation and .env files from <a href="">pydantic_settings.BaseSettings</a>.</h3>
 
 <p align="center">
     <a href="https://app.circleci.com/pipelines/github/radeklat/settings-doc?branch=main">
@@ -60,7 +60,7 @@ It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) temp
 pip install settings-doc
 ```
 
-# Usage
+# Command-line usage
 
 See `settings-doc --help` for all options.
 
@@ -210,6 +210,22 @@ Log level.
 ```
 
 # Advanced usage
+
+## Rendering documentation in code
+
+The `settings_doc.render()` function can be used to render the documentation in code. It returns a string with the rendered documentation. Using the [Minimal example](#minimal-example) from the command line usage, the code usage is as follows:
+
+```python
+from settings_doc import render, OutputFormat
+
+print(
+    render(
+        class_name="AppSettings",
+        module="src.settings",
+        output_format=OutputFormat.MARKDOWN,
+    )
+)
+```
 
 ## Custom templates
 
