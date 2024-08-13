@@ -88,6 +88,53 @@ def _model_fields(cls: Type[BaseSettings]) -> Iterator[Tuple[str, FieldInfo]]:
     yield from _model_fields_recursive(cls, cls.model_config["env_prefix"], cls.model_config["env_nested_delimiter"])
 
 
+def render(
+    output_format: OutputFormat,
+    module_path: Optional[List[str]] = None,
+    class_path: Optional[List[str]] = None,
+    heading_offset: int = 0,
+    templates: Optional[List[Path]] = None,
+) -> str:
+    """Render the settings documentation."""
+    if not class_path and not module_path:
+        raise ValueError("No sources of data were specified.")
+
+    if module_path is None:
+        module_path = []
+
+    if class_path is None:
+        class_path = []
+
+    if templates is None:
+        templates = []
+
+    settings: Dict[Type[BaseSettings], None] = importing.import_class_path(tuple(class_path))
+    settings.update(importing.import_module_path(tuple(module_path)))
+
+    if not settings:
+        raise ValueError("No sources of data were found.")
+
+    fields = itertools.chain.from_iterable(_model_fields(cls) for cls in settings)
+    classes: Dict[Type[BaseSettings], List[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
+
+    env = Environment(
+        loader=FileSystemLoader(templates + [TEMPLATES_FOLDER]),
+        autoescape=select_autoescape(),
+        trim_blocks=True,
+        lstrip_blocks=True,
+        keep_trailing_newline=True,
+    )
+    env.globals["is_values_with_descriptions"] = is_values_with_descriptions
+    env.globals["has_default_value"] = has_default_value
+    env.globals["is_typing_literal"] = is_typing_literal
+
+    return get_template(env, output_format).render(
+        heading_offset=heading_offset,
+        fields=fields,
+        classes=classes,
+    )
+
+
 @app.command()
 def generate(
     module_path: List[str] = Option(
@@ -145,32 +192,14 @@ def generate(
     ),
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""
-    settings: Dict[Type[BaseSettings], None] = importing.import_class_path(tuple(class_path))
-    settings.update(importing.import_module_path(tuple(module_path)))
-
-    if not settings:
-        secho("No sources of data were specified. Use the '--module' or '--class' options.", fg=colors.RED, err=True)
-        raise Abort()
-
-    fields = itertools.chain.from_iterable(_model_fields(cls) for cls in settings)
-    classes: Dict[Type[BaseSettings], List[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
-
-    render_kwargs = {"heading_offset": heading_offset, "fields": fields, "classes": classes}
-
-    env = Environment(
-        loader=FileSystemLoader(templates + [TEMPLATES_FOLDER]),
-        autoescape=select_autoescape(),
-        trim_blocks=True,
-        lstrip_blocks=True,
-        keep_trailing_newline=True,
-    )
-    env.globals["is_values_with_descriptions"] = is_values_with_descriptions
-    env.globals["has_default_value"] = has_default_value
-    env.globals["is_typing_literal"] = is_typing_literal
-    render = get_template(env, output_format).render(**render_kwargs)
+    try:
+        rendered_doc = render(output_format, module_path, class_path, heading_offset, templates)
+    except ValueError as exc:
+        secho(str(exc) + " Check the '--module' or '--class' options.", fg=colors.RED, err=True)
+        raise Abort() from exc
 
     if update_file is None:
-        print(render)
+        print(rendered_doc)
         return
 
     with open(update_file, encoding="utf-8") as file:
@@ -189,9 +218,9 @@ def generate(
                 )
                 raise Abort()
 
-            new_content = pattern.sub(f"\\1{render}\\2", content, count=1)
+            new_content = pattern.sub(f"\\1{rendered_doc}\\2", content, count=1)
         else:
-            new_content = render
+            new_content = rendered_doc
 
         file.write(new_content)
 

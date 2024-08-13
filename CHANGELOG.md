@@ -12,6 +12,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [4.1.0] - 2024-08-13
+
+### Features
+
+- Allow rendering documentation from code with `settings_doc.render()`.
+
 ## [4.0.1] - 2024-04-06
 
 ### Fixes
@@ -218,7 +224,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.0.1...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/radeklat/settings-doc/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/radeklat/settings-doc/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/radeklat/settings-doc/compare/3.1.2...4.0.0
 [3.1.2]: https://github.com/radeklat/settings-doc/compare/3.1.1...3.1.2
