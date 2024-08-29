@@ -3,9 +3,9 @@ from pathlib import Path
 import pytest
 import toml
 from _pytest.fixtures import fixture
+from click.testing import CliRunner
 from delfino.constants import PYPROJECT_TOML_FILENAME
 from delfino.models import PyprojectToml
-from typer.testing import CliRunner
 
 
 @fixture(scope="session")

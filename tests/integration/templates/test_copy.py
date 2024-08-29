@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
-from typer.testing import CliRunner
+from click.testing import CliRunner
 
 from settings_doc.main import TEMPLATES_FOLDER
 from tests.helpers import copy_templates

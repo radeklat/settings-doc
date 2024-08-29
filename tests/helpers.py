@@ -1,11 +1,10 @@
 from collections.abc import Iterable as IterableCollection
 from typing import Iterable, List, Literal, Optional, Type, Union
 
-from click.testing import Result
+from click.testing import CliRunner, Result
 from jinja2 import Environment, Template
 from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
-from typer.testing import CliRunner
 
 from settings_doc.main import app
 

@@ -1,5 +1,5 @@
+from click.testing import CliRunner
 from pytest_mock import MockerFixture
-from typer.testing import CliRunner
 
 from tests.fixtures.valid_settings import EmptySettings, FullSettings, RequiredSettings
 from tests.helpers import run_app_with_settings

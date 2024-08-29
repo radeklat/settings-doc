@@ -25,7 +25,7 @@ class TestRenderDotEnvFormat:
         mocker: MockerFixture, expected_string: str, settings_class: Type[BaseSettings]
     ):
         mock_import_class_path(mocker, settings_class)
-        assert expected_string in render(OutputFormat.DOTENV, class_path=["MockSettings"]).lower()
+        assert expected_string in render(OutputFormat.DOTENV, class_path=("MockSettings",)).lower()
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -42,7 +42,7 @@ class TestRenderDotEnvFormat:
         mocker: MockerFixture, expected_string: str, settings_class: Type[BaseSettings]
     ):
         mock_import_module_path(mocker, settings_class)
-        assert expected_string in render(OutputFormat.DOTENV, module_path=["MockSettings"]).lower()
+        assert expected_string in render(OutputFormat.DOTENV, module_path=("MockSettings",)).lower()
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -62,4 +62,4 @@ class TestRenderDotEnvFormat:
     def should_raise_value_error_when_source_data_is_empty(mocker: MockerFixture):
         mock_import_class_path(mocker, [])
         with pytest.raises(ValueError, match="No sources of data were found."):
-            render(OutputFormat.DOTENV, class_path=["MockSettings"])
+            render(OutputFormat.DOTENV, class_path=("MockSettings",))

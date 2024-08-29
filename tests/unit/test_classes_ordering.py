@@ -1,8 +1,8 @@
 from typing import List, Type
 
+from click.testing import CliRunner
 from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
-from typer.testing import CliRunner
 
 from tests.fixtures.valid_settings import EmptySettings, MultipleSettings, PossibleValuesSettings
 from tests.helpers import run_app_with_settings

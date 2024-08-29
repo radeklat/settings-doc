@@ -3,8 +3,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Dict, List
 
+from click.testing import CliRunner
 from pytest_mock import MockerFixture
-from typer.testing import CliRunner
 
 from tests.fixtures.valid_settings import EmptySettings
 from tests.helpers import copy_templates, run_app_with_settings

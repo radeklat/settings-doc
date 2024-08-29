@@ -9,20 +9,21 @@ from os import listdir
 from pathlib import Path
 from typing import Any, Dict, Final, Iterator, List, Literal, Optional, Tuple, Type
 
-from click import Abort, secho
+import click
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
 from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined
 from pydantic_settings import BaseSettings
-from typer import Option, Typer, colors
 
 from settings_doc import importing
 
-app = Typer()
-
-
 TEMPLATES_FOLDER: Final[Path] = Path(__file__).parent / "templates"
 LOGGER = logging.getLogger(__name__)
+
+
+@click.group()
+def app():
+    pass
 
 
 class OutputFormat(Enum):
@@ -38,8 +39,8 @@ class OutputFormat(Enum):
 
 def is_values_with_descriptions(value: Any) -> bool:
     if not isinstance(value, IterableCollection):
-        secho(f"`examples` must be iterable but `{value}` used.", fg=colors.RED)
-        raise Abort()
+        click.secho(f"`examples` must be iterable but `{value}` used.", fg="red")
+        raise click.Abort()
 
     return all(list(map(lambda item: isinstance(item, list) and 2 >= len(item) >= 1, value)))
 
@@ -90,26 +91,26 @@ def _model_fields(cls: Type[BaseSettings]) -> Iterator[Tuple[str, FieldInfo]]:
 
 def render(
     output_format: OutputFormat,
-    module_path: Optional[List[str]] = None,
-    class_path: Optional[List[str]] = None,
+    module_path: Optional[Tuple[str, ...]] = None,
+    class_path: Optional[Tuple[str, ...]] = None,
     heading_offset: int = 0,
-    templates: Optional[List[Path]] = None,
+    templates: Optional[Tuple[Path, ...]] = None,
 ) -> str:
     """Render the settings documentation."""
     if not class_path and not module_path:
         raise ValueError("No sources of data were specified.")
 
     if module_path is None:
-        module_path = []
+        module_path = tuple()
 
     if class_path is None:
-        class_path = []
+        class_path = tuple()
 
     if templates is None:
-        templates = []
+        templates = tuple()
 
-    settings: Dict[Type[BaseSettings], None] = importing.import_class_path(tuple(class_path))
-    settings.update(importing.import_module_path(tuple(module_path)))
+    settings: Dict[Type[BaseSettings], None] = importing.import_class_path(class_path)
+    settings.update(importing.import_module_path(module_path))
 
     if not settings:
         raise ValueError("No sources of data were found.")
@@ -118,7 +119,7 @@ def render(
     classes: Dict[Type[BaseSettings], List[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
 
     env = Environment(
-        loader=FileSystemLoader(templates + [TEMPLATES_FOLDER]),
+        loader=FileSystemLoader(templates + (TEMPLATES_FOLDER,)),
         autoescape=select_autoescape(),
         trim_blocks=True,
         lstrip_blocks=True,
@@ -136,67 +137,89 @@ def render(
 
 
 @app.command()
+@click.option(
+    "--module",
+    "-m",
+    "module_path",
+    callback=importing.module_path_callback,
+    multiple=True,
+    default=None,
+    help="Period-separated import path to a module that contains one or more subclasses"
+    "of `pydantic.BaseSettings`. All such sub-classes will be used to generate the output. "
+    "If that is undesirable, use the `--class` option to specify classes manually. "
+    "Must be importable from current working directory. Setting PYTHONPATH appropriately "
+    "may be required.",
+)
+@click.option(
+    "--class",
+    "-c",
+    "class_path",
+    multiple=True,
+    default=None,
+    callback=importing.class_path_callback,
+    help="Period-separated import path to a subclass of `pydantic.BaseSettings`. "
+    "Must be importable from current working directory. Use `--module` instead to auto-discover "
+    "all such subclasses in a module. Setting PYTHONPATH appropriately may be required.",
+)
+@click.option(
+    "--output-format",
+    "-f",
+    required=True,
+    type=click.Choice([_.value for _ in OutputFormat.__members__.values()]),
+    callback=lambda ctx, param, value: None if value is None else OutputFormat[value.upper()],
+)
+@click.option(
+    "--heading-offset",
+    type=int,
+    default=0,
+    callback=lambda ctx, param, value: (
+        value if value >= 0 else click.BadParameter("Value must be greater than or equal to 0.")
+    ),
+    help="How nested should be the top level heading generated.",
+)
+@click.option(
+    "--update",
+    "-u",
+    "update_file",
+    default=None,
+    type=click.Path(exists=True, writable=True, file_okay=True, dir_okay=False, resolve_path=True),
+    help="Overwrite given file instead of writing to STDOUT. An error is raised if the "
+    "file doesn't exist or is not writable. Combine this flag with the '--between' "
+    "flag to update only a section of a file. ",
+)
+@click.option(
+    "--between",
+    "update_between",
+    default=(None, None),
+    type=(str, str),
+    help="Update file given by '--update' between these two strings. New line after "
+    "the start mark/before the end mark is considered part of the pattern (if present). "
+    "Without the '--update' flag, this has no effect. ",
+)
+@click.option(
+    "--templates",
+    default=None,
+    type=click.Path(exists=True, writable=True, file_okay=False, dir_okay=True, resolve_path=True),
+    multiple=True,
+    help="Folder to use when looking up templates for generating output. Can be used "
+    "more than once, in a priority order. Built-in templates will be used last if no "
+    "matches found.",
+)
 def generate(
-    module_path: List[str] = Option(
-        [],
-        "--module",
-        "-m",
-        callback=importing.module_path_callback,
-        help="Period-separated import path to a module that contains one or more subclasses"
-        "of `pydantic.BaseSettings`. All such sub-classes will be used to generate the output. "
-        "If that is undesirable, use the `--class` option to specify classes manually. "
-        "Must be importable from current working directory. Setting PYTHONPATH appropriately "
-        "may be required.",
-    ),
-    class_path: List[str] = Option(
-        [],
-        "--class",
-        "-c",
-        callback=importing.class_path_callback,
-        help="Period-separated import path to a subclass of `pydantic.BaseSettings`. "
-        "Must be importable from current working directory. Use `--module` instead to auto-discover "
-        "all such subclasses in a module. Setting PYTHONPATH appropriately may be required.",
-    ),
-    output_format: OutputFormat = Option(..., "--output-format", "-f", help="Output format."),
-    heading_offset: int = Option(0, min=0, help="How nested should be the top level heading generated."),
-    update_file: Optional[Path] = Option(
-        None,
-        "--update",
-        "-u",
-        exists=True,
-        writable=True,
-        file_okay=True,
-        dir_okay=False,
-        resolve_path=True,
-        help="Overwrite given file instead of writing to STDOUT. An error is raised if the "
-        "file doesn't exist or is not writable. Combine this flag with the '--between' "
-        "flag to update only a section of a file. ",
-    ),
-    update_between: Tuple[str, str] = Option(
-        (None, None),
-        "--between",
-        help="Update file given by '--update' between these two strings. New line after "
-        "the start mark/before the end mark is considered part of the pattern (if present). "
-        "Without the '--update' flag, this has no effect. ",
-    ),
-    templates: List[Path] = Option(
-        [],
-        exists=True,
-        readable=True,
-        file_okay=False,
-        dir_okay=True,
-        resolve_path=True,
-        help="Folder to use when looking up templates for generating output. Can be used "
-        "more than once, in a priority order. Built-in templates will be used last if no "
-        "matches found.",
-    ),
+    module_path: Optional[Tuple[str, ...]],
+    class_path: Optional[Tuple[str, ...]],
+    output_format: OutputFormat,
+    heading_offset: int,
+    update_file: Optional[Path],
+    update_between: Tuple[Optional[str], Optional[str]],
+    templates: Optional[Tuple[Path, ...]],
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""
     try:
         rendered_doc = render(output_format, module_path, class_path, heading_offset, templates)
     except ValueError as exc:
-        secho(str(exc) + " Check the '--module' or '--class' options.", fg=colors.RED, err=True)
-        raise Abort() from exc
+        click.secho(str(exc) + " Check the '--module' or '--class' options.", fg="red", err=True)
+        raise click.Abort() from exc
 
     if update_file is None:
         print(rendered_doc)
@@ -206,17 +229,17 @@ def generate(
         content = file.read()
 
     with open(update_file, "w", encoding="utf-8") as file:
-        if all(update_between):
+        if update_between[0] and update_between[1]:
             pattern = re.compile(f"({re.escape(update_between[0])}\n?).*(\n?{re.escape(update_between[1])})", re.DOTALL)
 
             if pattern.search(content) is None:
-                secho(
+                click.secho(
                     f"Boundary marks '{update_between[0]}' and '{update_between[1]}' not found in '{update_file}'. "
                     f"Cannot update the content.",
-                    fg=colors.RED,
+                    fg="red",
                     err=True,
                 )
-                raise Abort()
+                raise click.Abort()
 
             new_content = pattern.sub(f"\\1{rendered_doc}\\2", content, count=1)
         else:
@@ -226,17 +249,12 @@ def generate(
 
 
 @app.command("templates")
-def manipulate_templates(
-    copy_to: Path = Option(
-        ...,
-        exists=True,
-        writable=True,
-        file_okay=False,
-        dir_okay=True,
-        resolve_path=True,
-        help="Output folder. Any existing templates with the same names with be overwritten.",
-    ),
-):
+@click.option(
+    "--copy-to",
+    type=click.Path(exists=True, writable=True, file_okay=False, dir_okay=True, resolve_path=True),
+    help="Output folder. Any existing templates with the same names with be overwritten.",
+)
+def manipulate_templates(copy_to: Path):
     """Copies built-in Jinja2 templates into a folder for modifying."""
     for file in listdir(TEMPLATES_FOLDER):
         shutil.copy2(TEMPLATES_FOLDER / file, copy_to)
