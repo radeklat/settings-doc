@@ -12,6 +12,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [4.2.0] - 2024-08-13
+
+### Features
+
+- Removed dependency on `typer` in favour of plain `click`. It is not as pretty, but it is more stable and easier to maintain.
+
 ## [4.1.0] - 2024-08-13
 
 ### Features
@@ -224,7 +230,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.1.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.2.0...HEAD
+[4.2.0]: https://github.com/radeklat/settings-doc/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/radeklat/settings-doc/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/radeklat/settings-doc/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/radeklat/settings-doc/compare/3.1.2...4.0.0

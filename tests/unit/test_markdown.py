@@ -2,10 +2,10 @@ from typing import Type
 
 import pytest
 from _pytest.logging import LogCaptureFixture
+from click.testing import CliRunner
 from pydantic import Field
 from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
-from typer.testing import CliRunner
 
 from tests.fixtures.invalid_settings import ExamplesNotIterableSettings
 from tests.fixtures.valid_settings import (

@@ -1,9 +1,9 @@
 from typing import Set, Type
 
 import pytest
+from click.testing import CliRunner
 from pydantic_settings import BaseSettings
 from pytest_mock import MockerFixture
-from typer.testing import CliRunner
 
 from settings_doc.main import app
 from tests.fixtures.module_with_single_settings_class import SingleSettingsInModule

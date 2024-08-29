@@ -3,9 +3,8 @@ from functools import lru_cache
 from inspect import isclass
 from typing import Dict, List, Tuple, Type
 
-from click import BadParameter, secho
+import click
 from pydantic_settings import BaseSettings
-from typer import colors
 
 _MODULE_ERROR_MSG = "No `pydantic.BaseSettings` subclasses found in module '{module_path}'."
 _RELATIVE_IMPORT_ERROR_MSG = "Relative imports are not supported."
@@ -25,7 +24,7 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings]
             cause = str(exc)
             if isinstance(exc, TypeError) and "relative import" in cause:
                 cause = _RELATIVE_IMPORT_ERROR_MSG
-            raise BadParameter(f"Cannot read the module: {cause}") from exc
+            raise click.BadParameter(f"Cannot read the module: {cause}") from exc
 
         new_classes: Dict[Type[BaseSettings], None] = {
             obj: None
@@ -35,12 +34,12 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings]
 
         if not new_classes:
             if len(module_paths) > 1:
-                secho(_MODULE_ERROR_MSG.format(module_path=module_path), fg=colors.YELLOW, err=True)
+                click.secho(_MODULE_ERROR_MSG.format(module_path=module_path), fg="yellow", err=True)
         else:
             settings.update(new_classes)
 
     if not settings:
-        raise BadParameter(
+        raise click.BadParameter(
             _MODULE_ERROR_MSG.format(module_path=module_paths[0])
             if len(module_paths) == 1
             else "No `pydantic.BaseSettings` subclasses found in any of the modules."
@@ -61,24 +60,28 @@ def import_class_path(class_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings], 
             cause = str(exc)
             if isinstance(exc, TypeError) and "relative import" in cause:
                 cause = _RELATIVE_IMPORT_ERROR_MSG
-            raise BadParameter(f"Cannot read the settings class: {cause}") from exc
+            raise click.BadParameter(f"Cannot read the settings class: {cause}") from exc
 
         if not isclass(new_class):
-            raise BadParameter(f"Target '{class_name}' in module '{module}' is not a class.")
+            raise click.BadParameter(f"Target '{class_name}' in module '{module}' is not a class.")
 
         if not issubclass(new_class, BaseSettings):
-            raise BadParameter(f"Target class must be a subclass of BaseSettings but '{new_class.__name__}' found.")
+            raise click.BadParameter(
+                f"Target class must be a subclass of BaseSettings but '{new_class.__name__}' found."
+            )
 
         settings[new_class] = None
 
     return settings
 
 
-def module_path_callback(value: List[str]) -> List[str]:
+def module_path_callback(ctx: click.Context, param: click.Parameter, value: List[str]) -> List[str]:
+    del ctx, param
     import_module_path(tuple(value))
     return value
 
 
-def class_path_callback(value: List[str]) -> List[str]:
+def class_path_callback(ctx: click.Context, param: click.Parameter, value: List[str]) -> List[str]:
+    del ctx, param
     import_class_path(tuple(value))
     return value
