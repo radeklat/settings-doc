@@ -31,7 +31,7 @@
 
 The same way you are able to generate OpenAPI documentation from [`pydantic.BaseModel`](https://pydantic-docs.helpmanual.io/usage/models/), `settings-doc` allows you to generate documentation from [`pydantic_settings.BaseSettings`](https://docs.pydantic.dev/latest/api/pydantic_settings/).
 
-It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) templating engine and [Typer](https://typer.tiangolo.com/) framework. If you don't like the built-in templates, you can easily modify them or write completely custom ones. All attributes of the [`BaseSettings`](https://docs.pydantic.dev/latest/usage/pydantic_settings/) models are exposed to the templates.
+It is powered by the [Jinja2](https://jinja.palletsprojects.com/en/latest/) templating engine and [Click](https://click.palletsprojects.com) framework. If you don't like the built-in templates, you can easily modify them or write completely custom ones. All attributes of the [`BaseSettings`](https://docs.pydantic.dev/latest/usage/pydantic_settings/) models are exposed to the templates.
 
 <!--
     How to generate TOC from PyCharm:
