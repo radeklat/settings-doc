@@ -1,3 +1,4 @@
+import sys
 from typing import Type
 
 import pytest
@@ -223,3 +224,49 @@ class TestMarkdownFormat:
         assert "`prefix_direct`" in actual_string
         assert "`prefix_sub_model__nested`" in actual_string
         assert "`prefix_sub_model__deep__leaf`" in actual_string
+
+
+@pytest.mark.skipif(sys.version_info < (3, 11), reason="StrEnum is not available in Python 3.10 and below")
+class TestMarkdownFormatFromStrEnum:
+    @staticmethod
+    def should_generate_default_value(runner: CliRunner, mocker: MockerFixture, str_enum_settings: Type[BaseSettings]):
+        expected_string = "# `logging_level`\n\n*optional*, default value: `debug`\n\n"
+        assert expected_string in run_app_with_settings(mocker, runner, str_enum_settings)
+
+    @staticmethod
+    def should_generate_possible_values(
+        runner: CliRunner, mocker: MockerFixture, str_enum_settings: Type[BaseSettings]
+    ):
+        expected_string = "## possible values\n\n`debug`, `info`"
+        assert expected_string in run_app_with_settings(mocker, runner, str_enum_settings)
+
+
+@pytest.mark.skipif(sys.version_info >= (3, 11), reason="StrEnum should be used in Python 3.11 and above")
+class TestMarkdownFormatFromStrSubclassedEnum:
+    @staticmethod
+    def should_generate_default_value_from_str_subclass_enums(
+        runner: CliRunner, mocker: MockerFixture, str_enum_subclass_settings: Type[BaseSettings]
+    ):
+        expected_string = "# `logging_level`\n\n*optional*, default value: `debug`\n\n"
+        assert expected_string in run_app_with_settings(mocker, runner, str_enum_subclass_settings)
+
+    @staticmethod
+    def should_generate_possible_values(
+        runner: CliRunner, mocker: MockerFixture, str_enum_subclass_settings: Type[BaseSettings]
+    ):
+        expected_string = "## possible values\n\n`debug`, `info`"
+        assert expected_string in run_app_with_settings(mocker, runner, str_enum_subclass_settings)
+
+
+class TestMarkdownFormatFromIntEnum:
+    @staticmethod
+    def should_generate_default_value(runner: CliRunner, mocker: MockerFixture, int_enum_settings: Type[BaseSettings]):
+        expected_string = "# `logging_level`\n\n*optional*, default value: `10`\n\n"
+        assert expected_string in run_app_with_settings(mocker, runner, int_enum_settings)
+
+    @staticmethod
+    def should_generate_possible_values(
+        runner: CliRunner, mocker: MockerFixture, int_enum_settings: Type[BaseSettings]
+    ):
+        expected_string = "## possible values\n\n`10`, `20`"
+        assert expected_string in run_app_with_settings(mocker, runner, int_enum_settings)

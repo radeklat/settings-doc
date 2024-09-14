@@ -14,7 +14,7 @@
 
 {% else %}{% endif %}{{ heading(1) }} `{{ env_name|upper }}`
 
-*{% if field.is_required() %}*Required*{% else %}Optional{% endif %}*{% if has_default_value(field) %}, default value: `{{ field.default }}`{% endif %}
+*{% if field.is_required() %}*Required*{% else %}Optional{% endif %}*{% if has_default_value(field) %}, default value: `{{ fix_str_enum_value(field.default) }}`{% endif %}
 
 {% if field.description %}
 
@@ -68,6 +68,8 @@
         {% set possible_values = field.json_schema_extra.possible_values %}
     {% elif is_typing_literal(field) %}
         {% set possible_values = field.annotation.__args__ %}
+    {% elif is_enum(field) %}
+        {% set possible_values = field.annotation.__members__.values() | map(attribute='value') | list %}
     {% endif %}
     {% if possible_values %}
 

@@ -12,6 +12,16 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [4.3.0] - 2024-09-14
+
+### Features
+
+- Correct rendering of default values `IntEnum`, `StrEnum` (Python >= 3.11) and `StrEnum(str, Enum)` (Python < 3.11).
+- Rendering of possible values from `Enum` subclasses.
+- New template global functions:
+  - `is_enum`: like `isinstance(field.annotation, EnumMeta)`
+  - `fix_str_enum_value`: for correct displaying of `StrEnum(str, Enum)` values for Python < 3.11
+
 ## [4.2.0] - 2024-08-13
 
 ### Features
@@ -230,7 +240,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.2.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.3.0...HEAD
+[4.3.0]: https://github.com/radeklat/settings-doc/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/radeklat/settings-doc/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/radeklat/settings-doc/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/radeklat/settings-doc/compare/4.0.0...4.0.1

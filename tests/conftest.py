@@ -27,3 +27,6 @@ def pyproject_toml(project_root):
 def poetry(pyproject_toml):
     assert pyproject_toml.tool.poetry
     return pyproject_toml.tool.poetry
+
+
+pytest_plugins = ["tests.fixtures.enum_settings"]

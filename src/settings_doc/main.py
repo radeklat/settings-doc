@@ -2,20 +2,18 @@ import itertools
 import logging
 import re
 import shutil
-import sys
-from collections.abc import Iterable as IterableCollection
 from enum import Enum, auto
 from os import listdir
 from pathlib import Path
-from typing import Any, Dict, Final, Iterator, List, Literal, Optional, Tuple, Type
+from typing import Dict, Final, Iterator, List, Optional, Tuple, Type
 
 import click
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
 from pydantic.fields import FieldInfo
-from pydantic_core import PydanticUndefined
 from pydantic_settings import BaseSettings
 
 from settings_doc import importing
+from settings_doc.template_functions import JINJA_ENV_GLOBALS
 
 TEMPLATES_FOLDER: Final[Path] = Path(__file__).parent / "templates"
 LOGGER = logging.getLogger(__name__)
@@ -37,28 +35,8 @@ class OutputFormat(Enum):
     DEBUG = auto()
 
 
-def is_values_with_descriptions(value: Any) -> bool:
-    if not isinstance(value, IterableCollection):
-        click.secho(f"`examples` must be iterable but `{value}` used.", fg="red")
-        raise click.Abort()
-
-    return all(list(map(lambda item: isinstance(item, list) and 2 >= len(item) >= 1, value)))
-
-
-def has_default_value(field: FieldInfo) -> bool:
-    return field.default is not PydanticUndefined
-
-
 def get_template(env: Environment, output_format: OutputFormat) -> Template:
     return env.get_template(f"{output_format.value}.jinja")
-
-
-def is_typing_literal(field: FieldInfo) -> bool:
-    if sys.version_info < (3, 9) and field.annotation is not None and hasattr(field.annotation, "__origin__"):
-        return field.annotation.__origin__ is Literal
-
-    # The class doesn't exist in Python 3.8 and below
-    return field.annotation.__class__.__name__ == "_LiteralGenericAlias"
 
 
 def _model_fields_recursive(
@@ -125,9 +103,7 @@ def render(
         lstrip_blocks=True,
         keep_trailing_newline=True,
     )
-    env.globals["is_values_with_descriptions"] = is_values_with_descriptions
-    env.globals["has_default_value"] = has_default_value
-    env.globals["is_typing_literal"] = is_typing_literal
+    env.globals.update(JINJA_ENV_GLOBALS)
 
     return get_template(env, output_format).render(
         heading_offset=heading_offset,
