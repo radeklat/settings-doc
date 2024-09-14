@@ -13,6 +13,8 @@
     {% endif %}
     {% if is_typing_literal(field) %}
         {% set possible_values = field.annotation.__args__ %}
+    {% elif is_enum(field) %}
+        {% set possible_values = field.annotation.__members__.values() | map(attribute='value') | list %}
     {% elif field.json_schema_extra and "possible_values" in field.json_schema_extra %}
         {% set possible_values = field.json_schema_extra.possible_values %}
     {% endif %}
@@ -40,7 +42,7 @@
             {% endfor %}
         {% endif %}
     {% endif %}
-{% if not field.is_required() %}# {% endif %}{{ env_name|upper }}={% if has_default_value(field) and field.default is not none %}{{ field.default }}{% endif %}
+{% if not field.is_required() %}# {% endif %}{{ env_name|upper }}={% if has_default_value(field) and field.default is not none %}{{ fix_str_enum_value(field.default) }}{% endif %}
 
 
 {% endfor %}
