@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Iterable as IterableCollection
-from typing import Iterable, List, Literal, Optional, Type, Union
+from typing import Iterable, Literal
 
 from click.testing import CliRunner, Result
 from jinja2 import Environment, Template
@@ -12,7 +14,7 @@ from settings_doc.main import app
 def _mock_import_path(
     path_type: Literal["class", "module"],
     mocker: MockerFixture,
-    settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]],
+    settings: type[BaseSettings] | Iterable[type[BaseSettings]],
 ) -> None:
     if not isinstance(settings, IterableCollection):
         settings = [settings]
@@ -21,25 +23,21 @@ def _mock_import_path(
     mocker.patch(f"settings_doc.importing.import_{path_type}_path", return_value=settings)
 
 
-def mock_import_class_path(
-    mocker: MockerFixture, settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]]
-) -> None:
+def mock_import_class_path(mocker: MockerFixture, settings: type[BaseSettings] | Iterable[type[BaseSettings]]) -> None:
     _mock_import_path("class", mocker, settings)
 
 
-def mock_import_module_path(
-    mocker: MockerFixture, settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]]
-) -> None:
+def mock_import_module_path(mocker: MockerFixture, settings: type[BaseSettings] | Iterable[type[BaseSettings]]) -> None:
     _mock_import_path("module", mocker, settings)
 
 
 def run_app_with_settings(
     mocker: MockerFixture,
     runner: CliRunner,
-    settings: Union[Type[BaseSettings], Iterable[Type[BaseSettings]]],
-    args: Optional[List[str]] = None,
+    settings: type[BaseSettings] | Iterable[type[BaseSettings]],
+    args: list[str] | None = None,
     fmt: str = "markdown",
-    template: Union[str, Template, None] = None,
+    template: str | Template | None = None,
 ) -> str:
     """Helper function to run common app scenarios.
 

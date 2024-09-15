@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import itertools
 import logging
 import re
@@ -5,7 +7,7 @@ import shutil
 from enum import Enum, auto
 from os import listdir
 from pathlib import Path
-from typing import Dict, Final, Iterator, List, Optional, Tuple, Type
+from typing import Final, Iterator
 
 import click
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
@@ -40,8 +42,8 @@ def get_template(env: Environment, output_format: OutputFormat) -> Template:
 
 
 def _model_fields_recursive(
-    cls: Type[BaseSettings], prefix: str, env_nested_delimiter: Optional[str]
-) -> Iterator[Tuple[str, FieldInfo]]:
+    cls: type[BaseSettings], prefix: str, env_nested_delimiter: str | None
+) -> Iterator[tuple[str, FieldInfo]]:
     for field_name, model_field in cls.model_fields.items():
         if model_field.validation_alias is not None:
             if isinstance(model_field.validation_alias, str):
@@ -63,16 +65,16 @@ def _model_fields_recursive(
             yield prefix + field_name, model_field
 
 
-def _model_fields(cls: Type[BaseSettings]) -> Iterator[Tuple[str, FieldInfo]]:
+def _model_fields(cls: type[BaseSettings]) -> Iterator[tuple[str, FieldInfo]]:
     yield from _model_fields_recursive(cls, cls.model_config["env_prefix"], cls.model_config["env_nested_delimiter"])
 
 
 def render(
     output_format: OutputFormat,
-    module_path: Optional[Tuple[str, ...]] = None,
-    class_path: Optional[Tuple[str, ...]] = None,
+    module_path: tuple[str, ...] | None = None,
+    class_path: tuple[str, ...] | None = None,
     heading_offset: int = 0,
-    templates: Optional[Tuple[Path, ...]] = None,
+    templates: tuple[Path, ...] | None = None,
 ) -> str:
     """Render the settings documentation."""
     if not class_path and not module_path:
@@ -87,14 +89,14 @@ def render(
     if templates is None:
         templates = tuple()
 
-    settings: Dict[Type[BaseSettings], None] = importing.import_class_path(class_path)
+    settings: dict[type[BaseSettings], None] = importing.import_class_path(class_path)
     settings.update(importing.import_module_path(module_path))
 
     if not settings:
         raise ValueError("No sources of data were found.")
 
     fields = itertools.chain.from_iterable(_model_fields(cls) for cls in settings)
-    classes: Dict[Type[BaseSettings], List[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
+    classes: dict[type[BaseSettings], list[FieldInfo]] = {cls: list(cls.model_fields.values()) for cls in settings}
 
     env = Environment(
         loader=FileSystemLoader(templates + (TEMPLATES_FOLDER,)),
@@ -182,13 +184,13 @@ def render(
     "matches found.",
 )
 def generate(
-    module_path: Optional[Tuple[str, ...]],
-    class_path: Optional[Tuple[str, ...]],
+    module_path: tuple[str, ...] | None,
+    class_path: tuple[str, ...] | None,
     output_format: OutputFormat,
     heading_offset: int,
-    update_file: Optional[Path],
-    update_between: Tuple[Optional[str], Optional[str]],
-    templates: Optional[Tuple[Path, ...]],
+    update_file: Path | None,
+    update_between: tuple[str | None, str | None],
+    templates: tuple[Path, ...] | None,
 ):
     """Formats `pydantic.BaseSettings` into various formats. By default, the output is to STDOUT."""
     try:

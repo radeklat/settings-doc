@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Type
+from __future__ import annotations
 
 import pytest
 from _pytest.capture import CaptureFixture
@@ -75,8 +75,8 @@ class TestImportModulePath:
         ],
     )
     def should_return_base_settings_classes(
-        module_paths: Tuple[str, ...],
-        expected_classes: Dict[Type[BaseSettings], None],
+        module_paths: tuple[str, ...],
+        expected_classes: dict[type[BaseSettings], None],
         capsys: CaptureFixture,
     ):
         classes = import_module_path(tuple(f"tests.fixtures.{module_path}" for module_path in module_paths))
@@ -112,7 +112,7 @@ class TestImportModulePath:
             ),
         ],
     )
-    def should_fail_with_bad_parameter_when(class_paths: Tuple[str, ...], error_message: str):
+    def should_fail_with_bad_parameter_when(class_paths: tuple[str, ...], error_message: str):
         with pytest.raises(BadParameter, match=error_message):
             import_module_path(class_paths)
 

@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Dict, List
 
 from click.testing import CliRunner
 from pytest_mock import MockerFixture
@@ -13,12 +14,12 @@ from tests.helpers import copy_templates, run_app_with_settings
 class TestTemplatesOverride:
     @staticmethod
     def should_use_templates_from_given_directories_in_priority_order(runner: CliRunner, mocker: MockerFixture):
-        stdouts: Dict[str, str] = {}
+        stdouts: dict[str, str] = {}
 
         with TemporaryDirectory() as folder_low_priority, TemporaryDirectory() as folder_high_priority:
             copy_templates(runner, folder_low_priority)
             copy_templates(runner, folder_high_priority)
-            files: List[str] = os.listdir(folder_low_priority)
+            files: list[str] = os.listdir(folder_low_priority)
             args = ["--templates", folder_high_priority, "--templates", folder_low_priority]
 
             folder_high_priority_path = Path(folder_high_priority)

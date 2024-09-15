@@ -1,4 +1,4 @@
-from typing import Dict, List, Type
+from __future__ import annotations
 
 import pytest
 from click import BadParameter
@@ -23,7 +23,7 @@ class TestImportClassPath:
             ),
         ],
     )
-    def should_return(class_paths: List[str], expected_classes: Dict[Type[BaseSettings], None]):
+    def should_return(class_paths: list[str], expected_classes: dict[type[BaseSettings], None]):
         classes = import_class_path(tuple(f"tests.fixtures.valid_settings.{class_path}" for class_path in class_paths))
         assert classes == expected_classes
 

@@ -1,4 +1,4 @@
-from typing import List, Type
+from __future__ import annotations
 
 from click.testing import CliRunner
 from pydantic_settings import BaseSettings
@@ -17,7 +17,7 @@ _TEMPLATE = """
 class TestClassesOrdering:
     @staticmethod
     def should_be_stable(runner: CliRunner, mocker: MockerFixture):
-        classes: List[Type[BaseSettings]] = [EmptySettings, MultipleSettings, PossibleValuesSettings]
+        classes: list[type[BaseSettings]] = [EmptySettings, MultipleSettings, PossibleValuesSettings]
         expected_cls_names = [_.__name__.lower() for _ in classes]
 
         for i in range(1, 11):

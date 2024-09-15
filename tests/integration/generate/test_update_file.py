@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import os
 from tempfile import NamedTemporaryFile
-from typing import Tuple
 
 import pytest
 from click.testing import CliRunner
@@ -18,7 +19,7 @@ _SUFFIX = "This is the end"
 
 def _run_app_update(
     mocker: MockerFixture, runner: CliRunner, content: str, repetitions: int, *args: str
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     stdout = ""
     try:
         with NamedTemporaryFile("w", delete=False) as write_file:
