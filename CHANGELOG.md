@@ -12,6 +12,10 @@ Types of changes are:
 
 ## [Unreleased]
 
+### Fixes
+
+- Use `__future__.annotations` everywhere.
+
 ## [4.3.0] - 2024-09-14
 
 ### Features

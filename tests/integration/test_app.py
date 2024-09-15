@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import os
 import sys
 from contextlib import contextmanager
 from pathlib import Path
 from runpy import run_module
 from subprocess import PIPE, CompletedProcess, run
-from typing import Iterator, List
+from typing import Iterator
 from unittest.mock import patch
 
 import pytest
@@ -44,7 +46,7 @@ def patch_pythonpath() -> Iterator[None]:
 
 
 @pytest.fixture()
-def command_line_args() -> List[str]:
+def command_line_args() -> list[str]:
     return ["generate", "--class", "tests.fixtures.valid_settings.EmptySettings", "--output-format", "markdown"]
 
 
@@ -60,7 +62,7 @@ class TestApp:
             pass
 
     @staticmethod
-    def should_be_executable(command_line_args: List[str]):
+    def should_be_executable(command_line_args: list[str]):
         with install():
             with patch_pythonpath():
                 os.chdir(Path(__file__).parent.parent.parent)
@@ -71,7 +73,7 @@ class TestApp:
 @pytest.mark.slow
 class TestMain:
     @staticmethod
-    def should_be_executable(command_line_args: List[str]):
+    def should_be_executable(command_line_args: list[str]):
         sys.argv = [sys.argv[0]] + command_line_args
         with patch_pythonpath():
             try:

@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import importlib
 from functools import lru_cache
 from inspect import isclass
-from typing import Dict, List, Tuple, Type
 
 import click
 from pydantic_settings import BaseSettings
@@ -11,11 +12,11 @@ _RELATIVE_IMPORT_ERROR_MSG = "Relative imports are not supported."
 
 
 @lru_cache
-def import_module_path(module_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings], None]:
+def import_module_path(module_paths: tuple[str, ...]) -> dict[type[BaseSettings], None]:
     if not module_paths:
         return {}
 
-    settings: Dict[Type[BaseSettings], None] = {}
+    settings: dict[type[BaseSettings], None] = {}
 
     for module_path in module_paths:
         try:
@@ -26,7 +27,7 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings]
                 cause = _RELATIVE_IMPORT_ERROR_MSG
             raise click.BadParameter(f"Cannot read the module: {cause}") from exc
 
-        new_classes: Dict[Type[BaseSettings], None] = {
+        new_classes: dict[type[BaseSettings], None] = {
             obj: None
             for obj in vars(module).values()
             if isclass(obj) and issubclass(obj, BaseSettings) and obj.__module__.startswith(module_path)
@@ -49,8 +50,8 @@ def import_module_path(module_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings]
 
 
 @lru_cache
-def import_class_path(class_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings], None]:
-    settings: Dict[Type[BaseSettings], None] = {}
+def import_class_path(class_paths: tuple[str, ...]) -> dict[type[BaseSettings], None]:
+    settings: dict[type[BaseSettings], None] = {}
 
     for class_path in class_paths:
         module, class_name = class_path.rsplit(".", maxsplit=1)
@@ -75,13 +76,13 @@ def import_class_path(class_paths: Tuple[str, ...]) -> Dict[Type[BaseSettings], 
     return settings
 
 
-def module_path_callback(ctx: click.Context, param: click.Parameter, value: List[str]) -> List[str]:
+def module_path_callback(ctx: click.Context, param: click.Parameter, value: list[str]) -> list[str]:
     del ctx, param
     import_module_path(tuple(value))
     return value
 
 
-def class_path_callback(ctx: click.Context, param: click.Parameter, value: List[str]) -> List[str]:
+def class_path_callback(ctx: click.Context, param: click.Parameter, value: list[str]) -> list[str]:
     del ctx, param
     import_class_path(tuple(value))
     return value
