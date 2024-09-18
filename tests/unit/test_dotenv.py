@@ -149,12 +149,12 @@ class TestDotEnvFormat:
         assert "prefix_sub_model_sub_model_2__leaf=" in actual_string
         assert "prefix_nested" not in actual_string
         assert "prefix_leaf" not in actual_string
-        assert "prefix_sub_model_direct" not in actual_string
-        assert "prefix_sub_model_leaf" not in actual_string
-        assert "prefix_sub_model_1" not in actual_string
-        assert "prefix_sub_model_sub_model_2__direct" not in actual_string
-        assert "prefix_sub_model_sub_model_2__nested" not in actual_string
-        assert "prefix_sub_model_sub_model_2__sub_model_1" not in actual_string
+        assert "sub_model_direct" not in actual_string
+        assert "sub_model_leaf" not in actual_string
+        assert "sub_model_1" not in actual_string
+        assert "sub_model_2__direct" not in actual_string
+        assert "sub_model_2__nested" not in actual_string
+        assert "sub_model_2__sub_model_1" not in actual_string
 
     @staticmethod
     def should_generate_settings_with_settings_sub_model_no_prefix_or_delimiter(
