@@ -241,7 +241,7 @@ class TestMarkdownFormat:
     ):
         actual_string = run_app_with_settings(mocker, runner, SettingsWithSettingsSubModelNoPrefixOrDelimiter)
 
-        assert "`my_leaf_leaf`" in actual_string
+        assert "`leaf`" in actual_string
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="StrEnum is not available in Python 3.10 and below")

@@ -12,6 +12,7 @@ from typing import Final, Iterator
 
 import click
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
+from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 from pydantic_settings import BaseSettings
 
@@ -43,7 +44,7 @@ def get_template(env: Environment, output_format: OutputFormat) -> Template:
 
 
 def _model_fields_recursive(
-    cls: type[BaseSettings], prefix: str, env_nested_delimiter: str | None
+    cls: type[BaseModel], prefix: str, env_nested_delimiter: str | None
 ) -> Iterator[tuple[str, FieldInfo]]:
     for field_name, model_field in cls.model_fields.items():
         if model_field.validation_alias is not None:
@@ -51,29 +52,16 @@ def _model_fields_recursive(
                 yield model_field.validation_alias, model_field
             else:
                 LOGGER.error(f"Unsupported validation alias type '{type(model_field.validation_alias)}'.")
-        elif (
-            model_field.annotation is not None
-            and hasattr(model_field.annotation, "model_fields")
-            and env_nested_delimiter is not None
-        ):
+        elif isclass(model_field.annotation) and issubclass(model_field.annotation, BaseModel):
             # There are nested fields and they can be joined by a delimiter. Generate variable names recursively.
-            yield from _model_fields_recursive(
-                model_field.annotation,
-                prefix + field_name + env_nested_delimiter,
-                env_nested_delimiter,
-            )
-        elif isclass(model_field.annotation) and issubclass(model_field.annotation, BaseSettings):
-            # There are nested fields that do not require a delimiter to be joined. Generate variable names recursively.
-            submodel_prefix = model_field.annotation.model_config.get("env_prefix", "")
-
-            if not submodel_prefix:
-                submodel_prefix = prefix + field_name + "_"
-
-            yield from _model_fields_recursive(
-                model_field.annotation,
-                submodel_prefix,
-                model_field.annotation.model_config.get("env_nested_delimiter", None),
-            )
+            if issubclass(model_field.annotation, BaseSettings):
+                yield from _model_fields(model_field.annotation)
+            else:  # BaseModel
+                yield from _model_fields_recursive(
+                    model_field.annotation,
+                    prefix + field_name + (env_nested_delimiter or ""),
+                    env_nested_delimiter or "",
+                )
         else:
             yield prefix + field_name, model_field
 

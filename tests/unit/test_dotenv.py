@@ -156,7 +156,7 @@ class TestDotEnvFormat:
             mocker, runner, SettingsWithSettingsSubModelNoPrefixOrDelimiter, fmt="dotenv"
         )
 
-        assert "my_leaf_leaf=" in actual_string
+        assert "leaf=" in actual_string
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="StrEnum is not available in Python 3.10 and below")

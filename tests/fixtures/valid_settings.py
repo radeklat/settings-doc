@@ -136,6 +136,11 @@ class SettingsWithSettingsSubModel(BaseSettings):
 
 
 class SettingsSubModel(BaseSettings):
+    """Expected environment variables.
+
+    - `LEAF`
+    """
+
     model_config = SettingsConfigDict(env_prefix="")
     leaf: str
 
@@ -143,7 +148,7 @@ class SettingsSubModel(BaseSettings):
 class SettingsWithSettingsSubModelNoPrefixOrDelimiter(BaseSettings):
     """Expected environment variables.
 
-    - `EMPTY_LOGGING_LEVEL`
+    - `LEAF`
     """
 
-    my_leaf: SettingsSubModel
+    my_leaf: Annotated[SettingsSubModel, Field(default_factory=SettingsSubModel)]
