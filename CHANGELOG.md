@@ -12,8 +12,11 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [4.3.1] - 2024-09-19
+
 ### Fixes
 
+- `settings-doc` now handles nested `BaseSettings` correctly. Make sure to use `--class` to point to the top level class. `--module` will pick up all `BaseSettings` subclasses even if they are nested. (#38 by @mssalvatore)
 - Use `__future__.annotations` everywhere.
 
 ## [4.3.0] - 2024-09-14
@@ -66,7 +69,7 @@ Types of changes are:
 
 ### Features
 
-- Added rendering of `env_prefix` from `pydantic_settings.SettingsConfigDict` by @dekkers in #29.
+- Added rendering of `env_prefix` from `pydantic_settings.SettingsConfigDict` (#29 by @dekkers).
 - Added rendering of `env_nested_delimiter` from `pydantic_settings.SettingsConfigDict`.
     
 ### Fixes
@@ -244,7 +247,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.3.0...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.3.1...HEAD
+[4.3.1]: https://github.com/radeklat/settings-doc/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/radeklat/settings-doc/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/radeklat/settings-doc/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/radeklat/settings-doc/compare/4.0.1...4.1.0
