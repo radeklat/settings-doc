@@ -16,6 +16,8 @@ from tests.fixtures.valid_settings import (
     ExamplesSettings,
     FullSettings,
     PossibleValuesSettings,
+    SettingsWithSettingsSubModel,
+    SettingsWithSettingsSubModelNoPrefixOrDelimiter,
     ValidationAliasChoicesSettings,
     ValidationAliasPathSettings,
     ValidationAliasSettings,
@@ -137,6 +139,33 @@ class TestDotEnvFormat:
         assert "prefix_direct=" in actual_string
         assert "prefix_sub_model__nested=" in actual_string
         assert "prefix_sub_model__deep__leaf=" in actual_string
+
+    @staticmethod
+    def should_generate_settings_with_settings_sub_model(runner: CliRunner, mocker: MockerFixture):
+        actual_string = run_app_with_settings(mocker, runner, SettingsWithSettingsSubModel, fmt="dotenv")
+
+        assert "prefix_direct=" in actual_string
+        assert "prefix_sub_model_nested=" in actual_string
+        assert "prefix_sub_model_sub_model_2__leaf=" in actual_string
+        assert "prefix_nested" not in actual_string
+        assert "prefix_leaf" not in actual_string
+        assert "sub_model_direct" not in actual_string
+        assert "sub_model_leaf" not in actual_string
+        assert "sub_model_1" not in actual_string
+        assert "sub_model_2__direct" not in actual_string
+        assert "sub_model_2__nested" not in actual_string
+        assert "sub_model_2__sub_model_1" not in actual_string
+
+    @staticmethod
+    def should_generate_settings_with_settings_sub_model_no_prefix_or_delimiter(
+        runner: CliRunner, mocker: MockerFixture
+    ):
+        actual_string = run_app_with_settings(
+            mocker, runner, SettingsWithSettingsSubModelNoPrefixOrDelimiter, fmt="dotenv"
+        )
+
+        assert "leaf=" in actual_string
+        assert "my_leaf" not in actual_string
 
 
 @pytest.mark.skipif(sys.version_info < (3, 11), reason="StrEnum is not available in Python 3.10 and below")
