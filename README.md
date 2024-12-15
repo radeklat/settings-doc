@@ -298,6 +298,7 @@ Example `.pre-commit-config.yaml` section provided below:
   rev: '3.0.0'
   hooks:
     - id: settings-doc-markdown
+      language: system
       args:
         - '--module'
         - 'src.settings'
