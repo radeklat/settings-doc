@@ -212,3 +212,34 @@ class TestDotEnvFormatFromIntEnum:
     ):
         expected_string = "# possible values:\n#   `10`, `20`"
         assert expected_string in run_app_with_settings(mocker, runner, int_enum_settings, fmt="dotenv")
+
+
+class TestDotEnvJSONExamplesSerialization:
+    @staticmethod
+    def should_use_double_quotes_in_default_value(runner: CliRunner, mocker: MockerFixture):
+        class Settings(BaseSettings):
+            option: str = Field({"key": "value"})
+
+        output = run_app_with_settings(mocker, runner, Settings, fmt="dotenv")
+
+        assert '{"key": "value"}' in output
+
+    @staticmethod
+    def should_use_double_quotes_in_possible_values(runner: CliRunner, mocker: MockerFixture):
+        class Settings(BaseSettings):
+            option: str = Field(..., json_schema_extra={"possible_values": [{"key": "value"}]})
+
+        output = run_app_with_settings(mocker, runner, Settings, fmt="dotenv")
+
+        assert '{"key": "value"}' in output
+
+    @staticmethod
+    def should_use_double_quotes_long_possible_values(runner: CliRunner, mocker: MockerFixture):
+        class Settings(BaseSettings):
+            option: str = Field(
+                ..., json_schema_extra={"possible_values": [{f"key{i}": f"value{i}"} for i in range(10)]}
+            )
+
+        output = run_app_with_settings(mocker, runner, Settings, fmt="dotenv")
+
+        assert '{"key1": "value1"}' in output

@@ -12,6 +12,12 @@ Types of changes are:
 
 ## [Unreleased]
 
+## [4.3.2] - 2025-01-02
+
+### Fixes
+
+- Render serialized dicts in default/example values in the dotenv template with double quotes, not single quotes.
+
 ## [4.3.1] - 2024-09-19
 
 ### Fixes
@@ -247,7 +253,8 @@ Add classifiers to the package.
 
 - Initial release
 
-[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.3.1...HEAD
+[Unreleased]: https://github.com/radeklat/settings-doc/compare/4.3.2...HEAD
+[4.3.2]: https://github.com/radeklat/settings-doc/compare/4.3.1...4.3.2
 [4.3.1]: https://github.com/radeklat/settings-doc/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/radeklat/settings-doc/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/radeklat/settings-doc/compare/4.1.0...4.2.0
