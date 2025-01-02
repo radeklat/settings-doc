@@ -43,6 +43,16 @@ def _fix_str_enum_value(value: Any) -> Any:
     return value
 
 
+def _serialize_dict(value: Any) -> Any:
+    if isinstance(value, dict):
+        return str(value).replace("'", '"')
+
+    if isinstance(value, list):
+        return [_serialize_dict(item) for item in value]
+
+    return value
+
+
 def _is_enum(field: FieldInfo) -> bool:
     return isinstance(field.annotation, EnumMeta)
 
@@ -52,5 +62,6 @@ JINJA_ENV_GLOBALS: dict[str, Callable] = {
     "is_values_with_descriptions": _is_values_with_descriptions,
     "is_typing_literal": _is_typing_literal,
     "fix_str_enum_value": _fix_str_enum_value,
+    "serialize_dict": _serialize_dict,
     "is_enum": _is_enum,
 }
